@@ -1,0 +1,6 @@
+{
+    "assetsMap": [
+        {"name": "hero", "path": "/images/kortti1.png"}
+    ],
+    "cardMap": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+}

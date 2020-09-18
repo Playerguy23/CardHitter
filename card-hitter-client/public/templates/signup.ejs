@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Signup</title>
+
+        <link rel="stylesheet" href="/styles/signup.css">
+
+        <script src="/socket.io/socket.io.js"></script>
+        <script src="/scripts/signup/signup.js"></script>
+    </head>
+
+    <body>
+        <div id="keskusta">
+            <pre id="message" width="100"></pre>
+            <h1>Rekisteröidy</h1>
+            <form id="signup-form">
+                <p>Käyttäjänimi</p>
+                <input type="text" id="username-input" placeholder="Käyttäjänimi">
+
+                <p>Salasana</p>
+                <input type="password" id="password-input" placeholder="Salasana">
+
+                <p>Kirjoita salasana uudelleen</p>
+                <input type="password" id="retype-input" placeholder="Kirjoita salasana uudelleen">
+
+                <br>
+
+                <button id="submit-button">Rekisteröidy</button>
+            </form>
+        </div>
+    </body>
+
+</html>

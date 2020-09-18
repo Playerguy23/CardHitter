@@ -1,0 +1,6 @@
+{
+    "findById": "SELECT * FROM user WHERE id = ?;",
+    "findByUsername": "SELECT * FROM user WHERE username = ?;",
+    "createUser": "INSERT INTO user (id, username, password, role, registeration) VALUES (?, ?, ?, 'USER', now());",
+    "updateLoginDate": "UPDATE user SET last_login = now() WHERE id = ?;"
+}
