@@ -3,7 +3,7 @@ const app = express();
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const morgan = require('morgan');
- 
+
 const PORT = process.env.PORT || 5000;
 const HOST = process.env.HOST || 'localhost';
 
