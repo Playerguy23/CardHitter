@@ -19,17 +19,25 @@ p {
     margin-bottom: 60px;
     margin-top: 50px;
 }
+/* 
+pre {
+    background-color: #1abd4000;
+} */
 
 .error {
+    padding: 30px 30px;
     font-size: 30px;
     color: #c90609;
-    text-shadow: 2px 3px 4px black;
+    background-color: #35b591;
+    text-shadow: 1px 1px 2px black;
 }
 
 .success {
+    padding: 30px 30px;
     font-size: 30px;
-    color: #1abd40;
-    text-shadow: 2px 3px 4px black;
+    color: #1c730a;
+    background-color:#35b591;
+    text-shadow: 1px 1px 2px black;
 }
 
 ::placeholder {

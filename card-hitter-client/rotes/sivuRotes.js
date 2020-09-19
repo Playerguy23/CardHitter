@@ -13,6 +13,10 @@ router.get('/login', (req, res) => {
     res.render('login');
 })
 
+router.get('/home', (req, res) => {
+    res.render('userhome');
+});
+
 router.get('/game', (req, res) => {
     res.render('game');
 });

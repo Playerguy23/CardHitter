@@ -28,11 +28,44 @@ const sockets = (socket) => {
                         error: true,
                         result: result
                     };
-                    
+
                     socket.emit('signup', res);
                 });
             }
 
+        });
+    });
+
+    socket.on('login', (data) => {
+        const config = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        }
+
+        fetch(`${baseUrl.url}/user/login`, config).then(response => {
+            if (response.ok) {
+                response.json().then(result => {
+                    const res = {
+                        error: false,
+                        msg: 'Käyttäjän tietoja haetaan...',
+                        result: result
+                    };
+
+                    socket.emit('login', res);
+                });
+            } else {
+                response.json().then(result => {
+                    const res = {
+                        error: true,
+                        result: result
+                    };
+
+                    socket.emit('login', res);
+                });
+            }
         });
     });
 }

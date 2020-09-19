@@ -25,6 +25,7 @@
         let passwordInput = document.getElementById('password-input');
         let retypeInput = document.getElementById('retype-input');
         let signupForm = document.getElementById('signup-form');
+        let submitButton = document.getElementById('submit-button');
         let message = document.getElementById('message');
 
         usernameInput.addEventListener('change', handleUsernameChange);
@@ -50,6 +51,7 @@
                         if (res.error) {
                             message.classList.add('error');
                             setTimeout(() => {
+                                message.classList.remove('error');
                                 message.textContent = '';
                                 vastaanOtettu = true;
                             }, 4000);
@@ -58,7 +60,7 @@
                             usernameInput.disabled = true;
                             passwordInput.disabled = true;
                             retypeInput.disabled = true;
-
+                            submitButton.disabled = true;
                             setTimeout(() => {
                                 message.classList.remove('success');
                                 message.textContent = '';
