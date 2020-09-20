@@ -1,3 +1,8 @@
+/**
+ * @file
+ * @author Joonatan Taajamaa
+ */
+
 const jsonwebtoken = require('jsonwebtoken');
 
 const validateRegisteration = (req, res, next) => {

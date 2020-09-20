@@ -1,3 +1,8 @@
+/**
+ * @file
+ * @author Joonatan Taajamaa
+ */
+
 const deckHandle = require('../lib/deckHandle');
 
 const sendOne = () => {

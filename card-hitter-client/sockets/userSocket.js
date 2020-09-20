@@ -1,3 +1,8 @@
+/**
+ * @file
+ * @author Joonatan Taajamaa
+ */
+
 const fetch = require('node-fetch');
 const baseUrl = require('../lib/baseUrl.json');
 

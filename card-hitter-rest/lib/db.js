@@ -1,3 +1,8 @@
+/**
+ * @file
+ * @author Joonatan Taajamaa
+ */
+
 const msyql = require('mysql');
 
 const connection = msyql.createConnection({

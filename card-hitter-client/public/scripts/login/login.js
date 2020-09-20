@@ -51,6 +51,7 @@
                         passwordInput.disabled = true;
                         submitButton.disabled = true;
 
+                        localStorage.clear();
                         localStorage.setItem('token', JSON.stringify(res.result));
 
                         setTimeout(() => {
@@ -60,7 +61,7 @@
                             window.location.href = '/home';
 
                             received = true;
-                        }, 3000);
+                        }, 1200);
                     }
 
                     received = true;

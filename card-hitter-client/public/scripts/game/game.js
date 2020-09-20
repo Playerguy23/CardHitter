@@ -2,6 +2,7 @@
 
 (function () {
     let socket = io();
+    const info = JSON.parse(localStorage.getItem('token'));
 
     let body;
     let pickButton;
@@ -9,12 +10,21 @@
     const cards = [];
 
     const pickCard = () => {
-        socket.emit('pickCard');
+        socket.emit('pickCard', info.token);
 
         let vastaanOtettu = false;
-        socket.on('pickCard', (cardDetails) => {
+        socket.on('pickCard', (data) => {
             if (!vastaanOtettu) {
-                localStorage.setItem('valiaikainen', JSON.stringify(cardDetails));
+                if(!info) {
+                    window.location.href = '/login';
+                }
+
+                if (!data.error) {
+                    localStorage.setItem('valiaikainen', JSON.stringify(data.result));
+                } else {
+                    window.location.href = '/login';
+                }
+
             }
         });
         cards.push(JSON.parse(localStorage.getItem('valiaikainen')));
@@ -35,7 +45,7 @@
     const main = () => {
         body = document.querySelector('body');
         pickButton = document.getElementById('pick-button');
-        
+
         pickButton.addEventListener('click', (e) => {
             e.preventDefault();
 

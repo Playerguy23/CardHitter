@@ -1,3 +1,8 @@
+/**
+ * @file
+ * @author Joonatan Taajamaa
+ */
+
 const gameMaps = require('./gameMaps.json');
 
 const deckAssets = gameMaps.assetsMap;

@@ -1,11 +1,18 @@
+/**
+ * @file
+ * @author Joonatan Taajamaa
+ */
+
 const express = require('express');
 const router = express.Router();
-const uuid = require('uuid');
 const bcrypt = require('bcryptjs');
 const jsonwebtoken = require('jsonwebtoken');
 
 const userMiddleware = require('../middleware/userMiddleware');
+
 const userService = require('../services/userService');
+const userInfoService = require('../services/userInfoService');
+const calculationService = require('../services/calculationService');
 
 router.put('/signup', userMiddleware.validateRegisteration, (req, res, next) => {
 
@@ -20,7 +27,6 @@ router.put('/signup', userMiddleware.validateRegisteration, (req, res, next) => 
                 }
 
                 const finalUser = {
-                    id: uuid.v4(),
                     username: lowerUsername,
                     password: hashedPassword
                 }
@@ -50,8 +56,7 @@ router.post('/login', (req, res, next) => {
 
                 if (result) {
                     const token = jsonwebtoken.sign({
-                        userId: userFromDatabase.id,
-                        role: userFromDatabase.role
+                        userId: userFromDatabase.id
                     }, 'SECRET', {
                         expiresIn: '2h'
                     });
@@ -69,6 +74,18 @@ router.post('/login', (req, res, next) => {
     });
 });
 
+router.put('/game/new', userMiddleware.checkLogin, (req, res, next) => {
+    const userId = req.userData.userId;
 
+    userInfoService.findAllActiveGamesByUserId(userId, (result) => {
+        if (result.length) {
+            userInfoService.setGameAsLost(userId);
+        }
+
+        userInfoService.createGame(userId, (result, id) => {
+            return res.status(200).send({ msg: 'Peli luotu', gameId: id });
+        });
+    });
+});
 
 module.exports = router;

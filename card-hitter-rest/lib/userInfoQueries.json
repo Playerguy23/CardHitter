@@ -1,0 +1,9 @@
+{
+    "findByUserId": "SELECT * FROM user_game WHERE user_id = ?;",
+    "findUsedCardsAmountByUserId": "SELECT cards_played WHERE user_id = ?;",
+    "findAllActiveGamesByUserId": "SELECT * FROM user_game WHERE user_id = ? AND active = 1;",
+    "createGame": "INSERT INTO user_game (id, user_id, win, cards_played, active) VALUES (?, ?, 0, 0, 1);",
+    "increaseCardAmount": "UPDATE user_game SET cards_played = ? WHERE user_id = ?;",
+    "setAsWon": "UPDATE user_game SET win = 1, active = 0 WHERE user_id = ?;",
+    "setAsLost": "UPDATE user_game SET active = 0 WHERE user_id = ?;"
+}

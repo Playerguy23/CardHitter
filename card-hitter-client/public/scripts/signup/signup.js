@@ -66,7 +66,7 @@
                                 message.textContent = '';
                                 window.location.href = '/login';
                                 vastaanOtettu = true;
-                            }, 2000);
+                            }, 1200);
                         }
                     }
                 });
