@@ -14,8 +14,10 @@ CREATE TABLE IF NOT EXISTS user (
 DROP TABLE IF EXISTS user_game;
 CREATE TABLE IF NOT EXISTS user_game (
     id VARCHAR(66),
-    new_game BIT,
     user_id VARCHAR(66),
+    win BIT,
+    cards_played INT(15),
+    active BIT,
     PRIMARY KEY (id),
     FOREIGN KEY (user_id) REFERENCES user(id)
 );
