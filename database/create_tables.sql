@@ -27,6 +27,10 @@ CREATE TABLE IF NOT EXISTS user_deck (
     id VARCHAR(66),
     name VARCHAR(133),
     path VARCHAR(255),
+    number INT,
+    on_game BIT,
+    user_card BIT,
+    active BIT,
     user_game_id VARCHAR(66),
     PRIMARY KEY (id),
     FOREIGN KEY (user_game_id) REFERENCES user_game(id)

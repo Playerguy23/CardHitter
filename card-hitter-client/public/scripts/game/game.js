@@ -15,7 +15,7 @@
         let vastaanOtettu = false;
         socket.on('pickCard', (data) => {
             if (!vastaanOtettu) {
-                if(!info) {
+                if (!info) {
                     window.location.href = '/login';
                 }
 
@@ -27,6 +27,7 @@
 
             }
         });
+        
         cards.push(JSON.parse(localStorage.getItem('valiaikainen')));
         localStorage.removeItem('valiaikainen');
     }
