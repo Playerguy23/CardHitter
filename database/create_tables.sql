@@ -22,8 +22,8 @@ CREATE TABLE IF NOT EXISTS user_game (
     FOREIGN KEY (user_id) REFERENCES user(id)
 );
 
-DROP TABLE IF EXISTS user_deck;
-CREATE TABLE IF NOT EXISTS user_deck (
+DROP TABLE IF EXISTS user_card;
+CREATE TABLE IF NOT EXISTS user_card (
     id VARCHAR(66),
     name VARCHAR(133),
     path VARCHAR(255),
