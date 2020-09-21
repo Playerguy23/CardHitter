@@ -11,10 +11,9 @@ const deck = gameMaps.cardMap;
 const provideOne = () => {
     const card = deckAssets[deck[deck.length - 1]];
 
-    deck.pop();
-
     return card;
 }
+
 
 module.exports = {
     provideOne: provideOne

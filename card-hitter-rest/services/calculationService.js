@@ -9,6 +9,12 @@ const addPlayedCards = (cardAmount, cardsPlayed) => {
     return newCardAmount;
 }
 
+const newCardNumber = (totalOfCards) => {
+    totalOfCards++;
+    return totalOfCards;
+}
+
 module.exports = {
-    addPlayedCards: addPlayedCards
+    addPlayedCards: addPlayedCards,
+    newCardNumber: newCardNumber
 }
