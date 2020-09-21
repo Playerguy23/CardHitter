@@ -35,12 +35,12 @@ router.put('/cards-one/:userGameId', userMiddleware.checkLogin, cardMiddleware.c
             userGameId: req.params.userGameId
         }
 
-        if (cardDetails.number < 40) {
+        if (cardDetails.number <= 40) {
             cardService.createCard(cardDetails, (result) => {
                 return res.status(200).send({ msg: 'Card created!' });
             });
         } else {
-            return res.status(405).send({ msg: 'Korttien määrä on yli 40.' });
+            return res.status(405).send({ msg: 'Korttien määrä on 40.' });
         }
     });
 
