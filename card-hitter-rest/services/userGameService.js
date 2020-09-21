@@ -6,10 +6,10 @@
 const uuid = require('uuid');
 
 const db = require('../lib/db');
-const userInfoQueries = require('../lib/userInfoQueries.json');
+const userGameQueries = require('../lib/userGameQueries.json');
 
 const findByUserId = (userId, callback) => {
-    db.query(userInfoQueries.findByUserId, [userId], (error, result) => {
+    db.query(userGameQueries.findByUserId, [userId], (error, result) => {
         if (error) {
             throw error;
         }
@@ -19,7 +19,7 @@ const findByUserId = (userId, callback) => {
 }
 
 const findUsedCardsAmountByUserId = (userId, callback) => {
-    db.query(userInfoQueries.findUsedCardsAmountByUserId, [userId], (error, result) => {
+    db.query(userGameQueries.findUsedCardsAmountByUserId, [userId], (error, result) => {
         if (error) {
             throw error;
         }
@@ -29,7 +29,7 @@ const findUsedCardsAmountByUserId = (userId, callback) => {
 }
 
 const findAllActiveGamesByUserId = (userId, callback) => {
-    db.query(userInfoQueries.findAllActiveGamesByUserId, [userId], (error, result) => {
+    db.query(userGameQueries.findAllActiveGamesByUserId, [userId], (error, result) => {
         if (error) {
             throw error;
         }
@@ -41,7 +41,7 @@ const findAllActiveGamesByUserId = (userId, callback) => {
 const createGame = (userId, callback) => {
     const newId = uuid.v4();
 
-    db.query(userInfoQueries.createGame, [newId, userId], (error, result) => {
+    db.query(userGameQueries.createGame, [newId, userId], (error, result) => {
         if (error) {
             throw error;
         }
@@ -51,7 +51,7 @@ const createGame = (userId, callback) => {
 }
 
 const setGameAsLost = (userId) => {
-    db.query(userInfoQueries.setAsLost, [userId], (error, result) => {
+    db.query(userGameQueries.setAsLost, [userId], (error, result) => {
         if (error) {
             throw error;
         }

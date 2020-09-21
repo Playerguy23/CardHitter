@@ -1,0 +1,7 @@
+{
+    "findById": "SELECT * FROM user_card WHERE id = ?;",
+    "findByUserGameId": "SELECT * FROM user_card WHERE user_game_id = ?;",
+    "createCard": "INSERT INTO user_card (id, name, path, number, on_game, user_card, active, user_game_id) VALUES (?, ?, ?, ?, 0, 0, 0, ?);",
+    "setAsPlayersCardByUserGameIdAndNumber": "UPDATE user_card SET on_game = 1, active = 1, user_card = 1 WHERE user_game_id = ?;",
+    "setAsEnemysCardByUserGameIdAndNumer": "UPDATE user_card SET on_game = 1, active = 1 WHERE user_game_id = ?;"
+}

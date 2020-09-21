@@ -11,7 +11,7 @@ const jsonwebtoken = require('jsonwebtoken');
 const userMiddleware = require('../middleware/userMiddleware');
 
 const userService = require('../services/userService');
-const userInfoService = require('../services/userInfoService');
+const userGameService = require('../services/userGameService');
 const calculationService = require('../services/calculationService');
 
 router.put('/signup', userMiddleware.validateRegisteration, (req, res, next) => {
@@ -77,12 +77,12 @@ router.post('/login', (req, res, next) => {
 router.put('/game/new', userMiddleware.checkLogin, (req, res, next) => {
     const userId = req.userData.userId;
 
-    userInfoService.findAllActiveGamesByUserId(userId, (result) => {
+    userGameService.findAllActiveGamesByUserId(userId, (result) => {
         if (result.length) {
-            userInfoService.setGameAsLost(userId);
+            userGameService.setGameAsLost(userId);
         }
 
-        userInfoService.createGame(userId, (result, id) => {
+        userGameService.createGame(userId, (result, id) => {
             return res.status(200).send({ msg: 'Peli luotu', gameId: id });
         });
     });
