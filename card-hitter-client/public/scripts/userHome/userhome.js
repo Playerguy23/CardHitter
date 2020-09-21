@@ -22,7 +22,7 @@
                         received = true;
                     } else {
                         localStorage.removeItem('game_id');
-                        localStorage.setItem('game_id', JSON.stringify(data.id));
+                        localStorage.setItem('game_id', data.id);
                         window.location.href = '/game';
 
                         received = true;

@@ -20,7 +20,7 @@ const sockets = (socket) => {
                 response.json().then(result => {
                     const data = {
                         error: false,
-                        id: result.id
+                        id: result.gameId
                     };
 
                     socket.emit('startGame', data);

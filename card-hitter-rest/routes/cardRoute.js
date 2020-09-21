@@ -17,7 +17,7 @@ router.get('/one', userMiddleware.checkLogin, (req, res, next) => {
     res.status(200).send(cardService.sendOne());
 });
 
-router.put('/cards-to/:userGameId', userMiddleware.checkLogin, cardMiddleware.checkUserGameId, (req, res, next) => {
+router.put('/cards-one/:userGameId', userMiddleware.checkLogin, cardMiddleware.checkUserGameId, (req, res, next) => {
     const card = deckHandler.provideOne();
 
     cardService.findByUserGameId(req.params.userGameId, (result) => {
