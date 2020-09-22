@@ -21,7 +21,6 @@ router.put('/cards-one/:userGameId', userMiddleware.checkLogin, cardMiddleware.c
     const card = deckHandler.provideOne();
 
     cardService.findByUserGameId(req.params.userGameId, (result) => {
-
         let newNumber = 1;
 
         if (result.length) {
