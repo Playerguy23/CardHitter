@@ -17,7 +17,7 @@ const PORT = process.env.PORT || 3000;
 const HOST = process.env.HOST || 'localhost';
 
 app.set('view engine', 'ejs');
-app.set('views', path.join(__dirname + '/public/templates'));
+app.set('views', path.join(__dirname + '/templates'));
 app.use(express.static(__dirname + '/public'));
 app.use(morgan('combined'));
 

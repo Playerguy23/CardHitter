@@ -47,7 +47,7 @@ router.put('/cards-one/:userGameId', userMiddleware.checkLogin, cardMiddleware.c
 
 });
 
-router.put('/deck/:userGameId', (req, res, next) => {
+router.put('/deck/:userGameId', userMiddleware.checkLogin, cardMiddleware.checkUserGameId, (req, res, next) => {
     const userGameId = req.params.userGameId;
 
     cardService.findByUserGameId(userGameId, (result) => {
@@ -57,7 +57,7 @@ router.put('/deck/:userGameId', (req, res, next) => {
         } else {
             return res.status(400).send({ msg: 'Kortteja on jo pelillä' });
         }
-    })
+    });
 });
 
 module.exports = router;
