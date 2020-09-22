@@ -9,11 +9,11 @@ const deckAssets = gameMaps.assetsMap;
 const deck = gameMaps.cardMap;
 
 const changeIndexes = (deck) => {
-
+    // TODO: for loop that suffles cards
 }
 
 const suffleDeck = () => {
-
+    // TODO: for loop that goes from 0 to random number
 }
 
 const provideOne = () => {
