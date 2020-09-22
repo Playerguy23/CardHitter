@@ -60,18 +60,13 @@ router.put('/deck/:userGameId', userMiddleware.checkLogin, cardMiddleware.checkU
 router.post('/player/pick/:userGameId', userMiddleware.checkLogin, cardMiddleware.checkUserGameId, (req, res, next) => {
     const userGameId = req.params.userGameId;
 
-    cardService.findAllPlayerCardsByUserCardOrderedByNumberInDesc(userGameId, (result) => {
-        if (result.length >= 5) {
-            cardService.findForUserByUserGameIdOrderedByNumberInDesc(userGameId, (result) => {
-                if (result.length) {
-                    cardService.setAsPlayersCardByUserGameIdAndNumber(result[0].id);
-                    return res.status(200).send(result[0]);
-                } else {
-                    return res.status(400).send({ msg: 'Korttipakka käytetty!' });
-                }
-            });
+
+    cardService.findForUserByUserGameIdOrderedByNumberInDesc(userGameId, (result) => {
+        if (result.length) {
+            cardService.setAsPlayersCardByUserGameIdAndNumber(result[0].id);
+            return res.status(200).send(result[0]);
         } else {
-            return res.status(400).send({ msg: 'Käsi täynnä!' });
+            return res.status(400).send({ msg: 'Korttipakka käytetty!' });
         }
     });
 });

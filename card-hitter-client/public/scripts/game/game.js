@@ -73,8 +73,8 @@
                     loadPlayerCard(JSON.parse(localStorage.getItem('valiaikainen')));
                     receivedEmit = true;
                 } else {
-                    alert(data.result.msg);
                     receivedEmit = true;
+                    alert(data.result.msg);
                 }
             }
         });

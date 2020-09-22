@@ -43,8 +43,8 @@ const findAllPlayerCardsByUserCardOrderedByNumberInDesc = (userGameId, callback)
     });
 }
 
-const findAllNumbersByUserCardOrderedByNumberInDesc = (userGameId, callback) => {
-    db.query(cardQueries.findAllNumbersByUserCardOrderedByNumberInDesc, [userGameId], (error, result) => {
+const findForUserByUserGameIdOrderedByNumberInDesc = (userGameId, callback) => {
+    db.query(cardQueries.findForUserByUserGameIdOrderedByNumberInDesc, [userGameId], (error, result) => {
         if (error) {
             throw error;
         }
@@ -107,7 +107,6 @@ const resetGame = (userGameId) => {
     findByUserGameId(userGameId, (result) => {
         if (result.length) {
             for (let i = 0; i < result.length; i++) {
-                // console.log(games[i].id)
                 db.query(cardQueries.setOutOfGameById, [result[i].id], (error, result) => {
                     if (error) {
                         throw error;
@@ -127,7 +126,7 @@ module.exports = {
     createDeck: createDeck,
     setAsPlayersCardByUserGameIdAndNumber: setAsPlayersCardByUserGameIdAndNumber,
     findAllPlayerCardsByUserCardOrderedByNumberInDesc: findAllPlayerCardsByUserCardOrderedByNumberInDesc,
-    findAllNumbersByUserCardOrderedByNumberInDesc: findAllNumbersByUserCardOrderedByNumberInDesc,
+    findForUserByUserGameIdOrderedByNumberInDesc: findForUserByUserGameIdOrderedByNumberInDesc,
     findById: findById,
     setOutOfGameById: setOutOfGameById,
     resetGame: resetGame
