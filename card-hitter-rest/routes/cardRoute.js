@@ -70,7 +70,7 @@ router.post('/player/pick/:userGameId', userMiddleware.checkLogin, cardMiddlewar
     });
 });
 
-router.post('/player/out/:cardId', userMiddleware.checkLogin, cardMiddleware.checkCardId, (req, res, next) => {
+router.post('/out/:cardId', userMiddleware.checkLogin, cardMiddleware.checkCardId, (req, res, next) => {
     const cardId = req.params.cardId;
 
     cardService.setOutOfGameById(cardId);
