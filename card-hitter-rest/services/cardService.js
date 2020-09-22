@@ -43,8 +43,8 @@ const findAllPlayerCardsByUserCardOrderedByNumberInDesc = (userGameId, callback)
     });
 }
 
-const findForUserByUserGameIdOrderedByNumberInDesc = (userGameId, callback) => {
-    db.query(cardQueries.findForUserByUserGameIdOrderedByNumberInDesc, [userGameId], (error, result) => {
+const findForGameByUserGameIdOrderedByNumberInDesc = (userGameId, callback) => {
+    db.query(cardQueries.findForGameByUserGameIdOrderedByNumberInDesc, [userGameId], (error, result) => {
         if (error) {
             throw error;
         }
@@ -67,6 +67,16 @@ const createCard = ({ name, path, number, userGameId }, callback) => {
 
 const setAsPlayersCardByUserGameIdAndNumber = (id) => {
     db.query(cardQueries.setAsPlayersCardByIdAndNumber, [id], (error, result) => {
+        if (error) {
+            throw error;
+        }
+
+        return true;
+    });
+}
+
+const setAsEnemysCardByIdAndNumber = (id) => {
+    db.query(cardQueries.setAsEnemysCardByIdAndNumber, [id], (error, result) => {
         if (error) {
             throw error;
         }
@@ -126,8 +136,9 @@ module.exports = {
     createDeck: createDeck,
     setAsPlayersCardByUserGameIdAndNumber: setAsPlayersCardByUserGameIdAndNumber,
     findAllPlayerCardsByUserCardOrderedByNumberInDesc: findAllPlayerCardsByUserCardOrderedByNumberInDesc,
-    findForUserByUserGameIdOrderedByNumberInDesc: findForUserByUserGameIdOrderedByNumberInDesc,
+    findForGameByUserGameIdOrderedByNumberInDesc: findForGameByUserGameIdOrderedByNumberInDesc,
     findById: findById,
     setOutOfGameById: setOutOfGameById,
+    setAsEnemysCardByIdAndNumber: setAsEnemysCardByIdAndNumber,
     resetGame: resetGame
 }
