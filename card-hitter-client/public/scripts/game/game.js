@@ -8,14 +8,12 @@
     let pickButton;
     let suffleButton;
 
-    const cards = [];
-
     const createDeck = () => {
-        const gameId = JSON.parse(localStorage.getItem('game_id'));
-        
+        const gameId = localStorage.getItem('game_id');
+
         const data = {
             token: info.token,
-            gameId: gameId
+            userGameId: gameId
         };
 
         socket.emit('suffle', data);
@@ -23,20 +21,39 @@
         let receivedEmit = false;
         socket.on('suffle', (data) => {
 
-            if (data.error) {
-                alert(data.result.msg);
-            } else {
-                pickButton.style.display = 'block';
+            if (!receivedEmit) {
+                if (data.error) {
+                    alert(data.result.msg);
+                } else {
+                    pickButton.style.display = 'block';
 
-                suffleButton.disabled = true;
-                suffleButton.style.display = 'none';
+                    suffleButton.disabled = true;
+                    suffleButton.style.display = 'none';
+                }
+                receivedEmit = true;
             }
-            receivedEmit = true;
         });
     }
 
-    const pickCard = () => {
-        socket.emit('pickCard', info.token);
+    const loadPlayerCard = (card) => {
+        let img = document.createElement('img');
+
+        img.src = card.path;
+        img.width = 100;
+        img.height = 200;
+
+        body.appendChild(img);
+    }
+
+    const pickCardToPlayer = () => {
+        localStorage.setItem('valiaikainen', 'test');
+        const gameId = localStorage.getItem('game_id');
+
+        const data = {
+            token: info.token,
+            userGameId: gameId
+        };
+        socket.emit('pickCard', data);
 
         let receivedEmit = false;
         socket.on('pickCard', (data) => {
@@ -47,26 +64,14 @@
 
                 if (!data.error) {
                     localStorage.setItem('valiaikainen', JSON.stringify(data.result));
+                    loadPlayerCard(JSON.parse(localStorage.getItem('valiaikainen')));
+                    receivedEmit = true;
                 } else {
-                    window.location.href = '/login';
+                    alert(data.result.msg);
+                    receivedEmit = true;
                 }
-
             }
         });
-
-        cards.push(JSON.parse(localStorage.getItem('valiaikainen')));
-        localStorage.removeItem('valiaikainen');
-    }
-
-    const loadHand = () => {
-        let img = document.createElement('img');
-        let card = cards[cards.length - 1];
-
-        img.src = card.path;
-        img.width = 100;
-        img.height = 200;
-
-        body.appendChild(img);
     }
 
     const main = () => {
@@ -85,8 +90,7 @@
         pickButton.addEventListener('click', (e) => {
             e.preventDefault();
 
-            pickCard();
-            loadHand();
+            pickCardToPlayer();
         });
     }
 

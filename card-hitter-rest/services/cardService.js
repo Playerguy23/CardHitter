@@ -23,6 +23,16 @@ const findByUserGameId = (userGameId, callback) => {
     });
 }
 
+const findForUserByUserGameIdOrderedByNumberInDesc = (userGameId, callback) => {
+    db.query(cardQueries.findForUserByUserGameIdOrderedByNumberInDesc, [userGameId], (error, result) => {
+        if (error) {
+            throw error;
+        }
+
+        return callback(result);
+    });
+}
+
 const createCard = ({ name, path, number, userGameId }, callback) => {
     const newId = uuid.v4();
 
@@ -32,6 +42,16 @@ const createCard = ({ name, path, number, userGameId }, callback) => {
         }
 
         return callback(result);
+    });
+}
+
+const setAsPlayersCardByUserGameIdAndNumber = (id) => {
+    db.query(cardQueries.setAsPlayersCardByIdAndNumber, [id], (error, result) => {
+        if (error) {
+            throw error;
+        }
+
+        return true;
     });
 }
 
@@ -52,10 +72,30 @@ const createDeck = (userGameId) => {
     }
 }
 
+const resetGame = (userGameId) => {
+
+    findByUserGameId(userGameId, (result) => {
+        if (result.length) {
+            for (let i = 0; i < result.length; i++) {
+                // console.log(games[i].id)
+                db.query(cardQueries.setOutOfGameById, [result[i].id], (error, result) => {
+                    if (error) {
+                        throw error;
+                    }
+
+                    return true;
+                });
+            }
+        }
+    });
+}
 
 module.exports = {
     sendOne: sendOne,
     findByUserGameId: findByUserGameId,
     createCard: createCard,
-    createDeck: createDeck
+    createDeck: createDeck,
+    setAsPlayersCardByUserGameIdAndNumber: setAsPlayersCardByUserGameIdAndNumber,
+    findForUserByUserGameIdOrderedByNumberInDesc: findForUserByUserGameIdOrderedByNumberInDesc,
+    resetGame: resetGame
 }

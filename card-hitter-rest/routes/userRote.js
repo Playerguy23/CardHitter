@@ -11,6 +11,7 @@ const jsonwebtoken = require('jsonwebtoken');
 const userMiddleware = require('../middleware/userMiddleware');
 
 const userService = require('../services/userService');
+const cardService = require('../services/cardService');
 const userGameService = require('../services/userGameService');
 const calculationService = require('../services/calculationService');
 
@@ -80,6 +81,10 @@ router.put('/game/new', userMiddleware.checkLogin, (req, res, next) => {
     userGameService.findAllActiveGamesByUserId(userId, (result) => {
         if (result.length) {
             userGameService.setGameAsLost(userId);
+
+            for (let i = 0; i < result.length; i++) {
+                cardService.resetGame(result[i].id);
+            }
         }
 
         userGameService.createGame(userId, (result, id) => {

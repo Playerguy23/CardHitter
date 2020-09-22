@@ -43,8 +43,6 @@ router.put('/cards-one/:userGameId', userMiddleware.checkLogin, cardMiddleware.c
             return res.status(405).send({ msg: 'Korttien määrä on 40.' });
         }
     });
-
-
 });
 
 router.put('/deck/:userGameId', userMiddleware.checkLogin, cardMiddleware.checkUserGameId, (req, res, next) => {
@@ -56,6 +54,20 @@ router.put('/deck/:userGameId', userMiddleware.checkLogin, cardMiddleware.checkU
             return res.status(200).send({ msg: 'Deck created' });
         } else {
             return res.status(400).send({ msg: 'Kortteja on jo pelillä' });
+        }
+    });
+});
+
+router.post('/player/pick/:userGameId', userMiddleware.checkLogin, cardMiddleware.checkUserGameId, (req, res, next) => {
+    const userGameId = req.params.userGameId;
+
+    cardService.findForUserByUserGameIdOrderedByNumberInDesc(userGameId, (result) => {
+        console.log(result[0])
+        if (result.length) {
+            cardService.setAsPlayersCardByUserGameIdAndNumber(result[0].id);
+            return res.status(200).send(result[0]);
+        } else {
+            return res.status(400).send({ msg: 'Korttipakka käytetty!' });
         }
     });
 });

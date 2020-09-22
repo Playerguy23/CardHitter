@@ -38,15 +38,15 @@ const sockets = (socket) => {
         });
     });
 
-    socket.on('pickCard', (token) => {
+    socket.on('pickCard', ({ token, userGameId }) => {
         const config = {
-            method: 'GET',
+            method: 'POST',
             headers: {
                 'Authorization': `Bearer ${token}`
             }
         };
 
-        fetch(`${baseUrl.url}/card/one`, config).then(response => {
+        fetch(`${baseUrl.url}/card/player/pick/${userGameId}`, config).then(response => {
             if (response.ok) {
                 response.json().then(result => {
                     const data = {
@@ -56,10 +56,13 @@ const sockets = (socket) => {
                     socket.emit('pickCard', data);
                 });
             } else {
-                const data = {
-                    error: true
-                };
-                socket.emit('pickCard', data);
+                response.json().then(result => {
+                    const data = {
+                        error: true,
+                        result: result
+                    };
+                    socket.emit('pickCard', data);
+                });
             }
         });
     });
