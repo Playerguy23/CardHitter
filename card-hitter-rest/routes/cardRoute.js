@@ -47,4 +47,17 @@ router.put('/cards-one/:userGameId', userMiddleware.checkLogin, cardMiddleware.c
 
 });
 
+router.put('/deck/:userGameId', (req, res, next) => {
+    const userGameId = req.params.userGameId;
+
+    cardService.findByUserGameId(userGameId, (result) => {
+        if (!result.length) {
+            cardService.createDeck(userGameId);
+            return res.status(200).send({ msg: 'Deck created' });
+        } else {
+            return res.status(400).send({ msg: 'Kortteja on jo pelillä' });
+        }
+    })
+});
+
 module.exports = router;

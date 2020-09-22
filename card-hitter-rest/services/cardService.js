@@ -35,9 +35,27 @@ const createCard = ({ name, path, number, userGameId }, callback) => {
     });
 }
 
+const createDeck = (userGameId) => {
+    for (let i = 1; i <= 40; i++) {
+        const card = deckHandle.provideOne();
+
+        const details = {
+            name: card.name,
+            path: card.path,
+            number: i,
+            userGameId: userGameId
+        };
+
+        createCard(details, (result) => {
+            return true;
+        });
+    }
+}
+
 
 module.exports = {
     sendOne: sendOne,
     findByUserGameId: findByUserGameId,
-    createCard: createCard
+    createCard: createCard,
+    createDeck: createDeck
 }
