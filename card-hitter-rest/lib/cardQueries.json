@@ -1,6 +1,7 @@
 {
     "findById": "SELECT * FROM user_card WHERE id = ?;",
     "findForUserByUserGameIdOrderedByNumberInDesc": "SELECT * FROM user_card WHERE active = 1 AND on_game = 0 AND user_card = 0 AND user_game_id = ? ORDER BY number DESC;",
+    "findAllPlayerCardsByUserCardOrderedByNumberInDesc": "SELECT * from user_card WHERE active = 1 AND user_game_id = 1 AND on_game = 1 AND user_game_id = ? ORDER BY number DESC;",
     "findAddableCard": "SELECT * FROM user_card WHERE active = 1 AND on_game = 0 AND number = ?;",
     "findByUserGameId": "SELECT * FROM user_card WHERE user_game_id = ?;",
     "createCard": "INSERT INTO user_card (id, name, path, number, on_game, user_card, active, user_game_id) VALUES (?, ?, ?, ?, 0, 0, 1, ?);",

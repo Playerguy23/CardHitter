@@ -13,6 +13,16 @@ const sendOne = () => {
     return deckHandle.provideOne();
 }
 
+const findById = (id, callback) => {
+    db.query(cardQueries.findById, [id], (error, result) => {
+        if (error) {
+            throw error;
+        }
+
+        return callback(result);
+    });
+}
+
 const findByUserGameId = (userGameId, callback) => {
     db.query(cardQueries.findByUserGameId, [userGameId], (error, result) => {
         if (error) {
@@ -23,8 +33,18 @@ const findByUserGameId = (userGameId, callback) => {
     });
 }
 
-const findForUserByUserGameIdOrderedByNumberInDesc = (userGameId, callback) => {
-    db.query(cardQueries.findForUserByUserGameIdOrderedByNumberInDesc, [userGameId], (error, result) => {
+const findAllPlayerCardsByUserCardOrderedByNumberInDesc = (userGameId, callback) => {
+    db.query(cardQueries.findAllPlayerCardsByUserCardOrderedByNumberInDesc, [userGameId], (error, result) => {
+        if (error) {
+            throw error;
+        }
+
+        return callback(result);
+    });
+}
+
+const findAllNumbersByUserCardOrderedByNumberInDesc = (userGameId, callback) => {
+    db.query(cardQueries.findAllNumbersByUserCardOrderedByNumberInDesc, [userGameId], (error, result) => {
         if (error) {
             throw error;
         }
@@ -47,6 +67,16 @@ const createCard = ({ name, path, number, userGameId }, callback) => {
 
 const setAsPlayersCardByUserGameIdAndNumber = (id) => {
     db.query(cardQueries.setAsPlayersCardByIdAndNumber, [id], (error, result) => {
+        if (error) {
+            throw error;
+        }
+
+        return true;
+    });
+}
+
+const setOutOfGameById = (id) => {
+    db.query(cardQueries.setOutOfGameById, [id], (error, result) => {
         if (error) {
             throw error;
         }
@@ -96,6 +126,9 @@ module.exports = {
     createCard: createCard,
     createDeck: createDeck,
     setAsPlayersCardByUserGameIdAndNumber: setAsPlayersCardByUserGameIdAndNumber,
-    findForUserByUserGameIdOrderedByNumberInDesc: findForUserByUserGameIdOrderedByNumberInDesc,
+    findAllPlayerCardsByUserCardOrderedByNumberInDesc: findAllPlayerCardsByUserCardOrderedByNumberInDesc,
+    findAllNumbersByUserCardOrderedByNumberInDesc: findAllNumbersByUserCardOrderedByNumberInDesc,
+    findById: findById,
+    setOutOfGameById: setOutOfGameById,
     resetGame: resetGame
 }

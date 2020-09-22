@@ -8,6 +8,8 @@
     let pickButton;
     let suffleButton;
 
+    let cards = [];
+
     const createDeck = () => {
         const gameId = localStorage.getItem('game_id');
 
@@ -36,13 +38,17 @@
     }
 
     const loadPlayerCard = (card) => {
+        let button = document.createElement('button');
         let img = document.createElement('img');
 
         img.src = card.path;
         img.width = 100;
         img.height = 200;
 
-        body.appendChild(img);
+        button.appendChild(img);
+        body.appendChild(button);
+
+        cards.push(card);
     }
 
     const pickCardToPlayer = () => {
