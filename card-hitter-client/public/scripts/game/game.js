@@ -42,13 +42,6 @@
         });
     }
 
-    const removeCard = (card) => {
-        const oldChild = card;
-        console.log(oldChild);
-
-        playersDiv.removeChild(oldChild);
-    }
-
     function listenHand() {
         for (let i = 0; i < playerElementArray.length; i++) {
             playerElementArray[i].addEventListener('click', (e) => {
@@ -78,10 +71,6 @@
                 });
             });
         }
-    }
-
-    const hanldleRemoveCards = () => {
-
     }
 
     const loadEnemyCard = (card) => {
@@ -188,13 +177,9 @@
 
 
             pickCardToPlayer();
-            
-
-            
         });
 
         setInterval(() => { listenHand(); }, 1000);
-        // listenHand();
     }
 
     document.addEventListener('DOMContentLoaded', main);
