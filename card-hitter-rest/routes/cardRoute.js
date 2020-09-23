@@ -91,4 +91,22 @@ router.post('/out/:cardId', userMiddleware.checkLogin, cardMiddleware.checkCardI
     return res.status(200).send({ msg: 'Kortti poistettu pelistä!' });
 });
 
+router.post('/out', userMiddleware.checkLogin, (req, res, next) => {
+    const playerCardId = req.query.playerCardId;
+    const enemyCard = req.query.enemyCard;
+
+    cardService.findById(playerCardId, (resultA) => {
+        cardService.findById(enemyCard, (resultB) => {
+            if (resultA[0].name === resultB[0].name) {
+                cardService.setOutOfGameById(playerCardId);
+                cardService.setOutOfGameById(enemyCard);
+
+                return res.status(200).send({ msg: 'Kortit poistettu pelistä!' });
+            } else {
+                return res.status(400).send({ msg: 'Kotit eivät olleet samat.' });
+            }
+        });
+    });
+});
+
 module.exports = router;

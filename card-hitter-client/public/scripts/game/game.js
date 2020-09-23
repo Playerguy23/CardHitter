@@ -5,10 +5,13 @@
     const info = JSON.parse(localStorage.getItem('token'));
 
     let body;
+    let playersDiv;
+    let enemysDiv;
     let pickButton;
     let suffleButton;
 
-    let cards = [];
+    let hand = [];
+    let enemyCard;
 
     const createDeck = () => {
         const gameId = localStorage.getItem('game_id');
@@ -37,6 +40,42 @@
         });
     }
 
+    const loadEnemyCard = (card) => {
+        let img = document.createElement('img');
+
+        img.src = card.path;
+        img.width = 100;
+        img.height = 200;
+
+        enemysDiv.appendChild(img);
+    }
+
+    const pickEnemyCard = () => {
+        localStorage.setItem('valiaikainenENEMY', 'test');
+        const gameId = localStorage.getItem('game_id');
+
+        const data = {
+            token: info.token,
+            userGameId: gameId
+        };
+
+        socket.emit('enemyPick', data);
+
+        let emitReceived = false;
+        socket.on('enemyPick', (data) => {
+            if (!emitReceived) {
+                if (!data.error) {
+                    enemyCard = data.result;
+                    loadEnemyCard(enemyCard);
+                    emitReceived = true;
+                } else {
+                    alert(data.result.msg);
+                    emitReceived = true;
+                }
+            }
+        });
+    }
+
     const loadPlayerCard = (card) => {
         let button = document.createElement('button');
         let img = document.createElement('img');
@@ -46,9 +85,9 @@
         img.height = 200;
 
         button.appendChild(img);
-        body.appendChild(button);
+        playersDiv.appendChild(button);
 
-        cards.push(card);
+        hand.push(card);
     }
 
     const pickCardToPlayer = () => {
@@ -81,7 +120,9 @@
     }
 
     const main = () => {
-        body = document.querySelector('body');
+        body = document.getElementById('body');
+        enemysDiv = document.getElementById('enemy-card');
+        playersDiv = document.getElementById('player-cards');
         suffleButton = document.getElementById('suffle-button');
         pickButton = document.getElementById('pick-button');
 
@@ -91,6 +132,7 @@
             e.preventDefault();
 
             createDeck();
+            pickEnemyCard();
         });
 
         pickButton.addEventListener('click', (e) => {
@@ -98,6 +140,15 @@
 
             pickCardToPlayer();
         });
+
+
+        for (let i = 0; i < playersDiv.children.length; i++) {
+            kortti.addEventListener('click', (e) => {
+                e.preventDefault();
+
+                socket.emit('pelaaKortti', hand[0]);
+            });
+        }
     }
 
     document.addEventListener('DOMContentLoaded', main);

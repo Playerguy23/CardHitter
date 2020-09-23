@@ -38,6 +38,37 @@ const sockets = (socket) => {
         });
     });
 
+    socket.on('enemyPick', ({ token, userGameId }) => {
+        const config = {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        };
+
+        fetch(`${baseUrl.url}/card/enemy/pick/${userGameId}`, config).then(response => {
+            if (response.ok) {
+                response.json().then(result => {
+                    const data = {
+                        error: false,
+                        result: result
+                    };
+
+                    socket.emit('enemyPick', data);
+                });
+            } else {
+                response.json().then(result => {
+                    const data = {
+                        error: true,
+                        result: result
+                    };
+
+                    socket.emit('enemyPick', data);
+                });
+            }
+        });
+    });
+
     socket.on('pickCard', ({ token, userGameId }) => {
         const config = {
             method: 'POST',
@@ -53,6 +84,7 @@ const sockets = (socket) => {
                         error: false,
                         result: result
                     };
+
                     socket.emit('pickCard', data);
                 });
             } else {
