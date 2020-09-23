@@ -4,7 +4,6 @@
     let socket = io();
     const info = JSON.parse(localStorage.getItem('token'));
 
-    let body;
     let playersDiv;
     let enemysDiv;
     let pickButton;
@@ -120,7 +119,6 @@
     }
 
     const main = () => {
-        body = document.getElementById('body');
         enemysDiv = document.getElementById('enemy-card');
         playersDiv = document.getElementById('player-cards');
         suffleButton = document.getElementById('suffle-button');
