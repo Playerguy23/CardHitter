@@ -29,7 +29,7 @@ const sockets = (socket) => {
             } else {
                 response.json().then(result => {
                     const data = {
-                        error: false,
+                        error: true,
                         result: result
                     };
 
