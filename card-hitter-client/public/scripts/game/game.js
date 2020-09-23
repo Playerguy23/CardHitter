@@ -30,6 +30,7 @@
             if (!receivedEmit) {
                 if (data.error) {
                     alert(data.result.msg);
+                    window.location.href = '/home';
                 } else {
                     pickButton.style.display = 'block';
 
@@ -79,18 +80,22 @@
     }
 
     const listenHand = () => {
-        for (let i = 0; i < playerElementArray.length; i++) {
-            const card = playerElementArray[i];
+        let calculator = 0;
+        for (let card of playersDiv.children) {
 
+            
             card.addEventListener('click', (e) => {
                 e.preventDefault();
 
+                console.log(hand[calculator])
                 const data = {
                     token: info.token,
-                    playerCard: hand[i],
+                    playerCard: hand[calculator],
                     enemyCard: enemyCard
                 };
 
+                calculator++;
+                
                 socket.emit('playCard', data);
 
                 let receivedEmit = false;
@@ -102,11 +107,14 @@
                         } else {
                             playersDiv.removeChild(card);
                             enemysDiv.removeChild(enemyElementArray[0]);
+                            enemyElementArray.pop();
+                            pickEnemyCard();
                             receivedEmit = true;
                         }
                     }
-                })
+                });
             });
+
         }
     }
 
