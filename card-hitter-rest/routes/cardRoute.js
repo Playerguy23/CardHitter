@@ -93,13 +93,13 @@ router.post('/out/:cardId', userMiddleware.checkLogin, cardMiddleware.checkCardI
 
 router.post('/out', userMiddleware.checkLogin, (req, res, next) => {
     const playerCardId = req.query.playerCardId;
-    const enemyCard = req.query.enemyCard;
+    const enemyCardId = req.query.enemyCardId;
 
     cardService.findById(playerCardId, (resultA) => {
-        cardService.findById(enemyCard, (resultB) => {
+        cardService.findById(enemyCardId, (resultB) => {
             if (resultA[0].name === resultB[0].name) {
                 cardService.setOutOfGameById(playerCardId);
-                cardService.setOutOfGameById(enemyCard);
+                cardService.setOutOfGameById(enemyCardId);
 
                 return res.status(200).send({ msg: 'Kortit poistettu pelistä!' });
             } else {

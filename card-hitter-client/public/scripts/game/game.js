@@ -9,6 +9,8 @@
     let pickButton;
     let suffleButton;
 
+    let playerElementArray = [];
+    let enemyElementArray = [];
     let hand = [];
     let enemyCard;
 
@@ -47,6 +49,7 @@
         img.height = 200;
 
         enemysDiv.appendChild(img);
+        enemyElementArray.push(img);
     }
 
     const pickEnemyCard = () => {
@@ -75,6 +78,41 @@
         });
     }
 
+    const listenHand = () => {
+        for (let i = 0; i < playerElementArray.length; i++) {
+            const card = playerElementArray[i];
+            console.log(playerElementArray[i])
+
+            card.addEventListener('click', (e) => {
+                e.preventDefault();
+
+                console.log('hello')
+
+                const data = {
+                    token: info.token,
+                    playerCard: hand[i],
+                    enemyCard: enemyCard
+                };
+
+                socket.emit('playCard', data);
+
+                let receivedEmit = false;
+                socket.on('playCard', (data) => {
+                    if (!receivedEmit) {
+                        if (data.error) {
+                            alert(data.result.msg);
+                            receivedEmit = true;
+                        } else {
+                            playersDiv.removeChild(card);
+                            enemysDiv.removeChild(enemyElementArray[0]);
+                            receivedEmit = true;
+                        }
+                    }
+                })
+            });
+        }
+    }
+
     const loadPlayerCard = (card) => {
         let button = document.createElement('button');
         let img = document.createElement('img');
@@ -85,6 +123,7 @@
 
         button.appendChild(img);
         playersDiv.appendChild(button);
+        playerElementArray.push(button);
 
         hand.push(card);
     }
@@ -109,6 +148,7 @@
                 if (!data.error) {
                     localStorage.setItem('valiaikainen', JSON.stringify(data.result));
                     loadPlayerCard(JSON.parse(localStorage.getItem('valiaikainen')));
+                    listenHand();
                     receivedEmit = true;
                 } else {
                     receivedEmit = true;
@@ -138,15 +178,6 @@
 
             pickCardToPlayer();
         });
-
-
-        for (let i = 0; i < playersDiv.children.length; i++) {
-            kortti.addEventListener('click', (e) => {
-                e.preventDefault();
-
-                socket.emit('pelaaKortti', hand[0]);
-            });
-        }
     }
 
     document.addEventListener('DOMContentLoaded', main);
