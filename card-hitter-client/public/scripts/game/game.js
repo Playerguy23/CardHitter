@@ -42,6 +42,48 @@
         });
     }
 
+    const removeCard = (card) => {
+        const oldChild = card;
+        console.log(oldChild);
+
+        playersDiv.removeChild(oldChild);
+    }
+
+    function listenHand() {
+        for (let i = 0; i < playerElementArray.length; i++) {
+            playerElementArray[i].addEventListener('click', (e) => {
+                e.preventDefault();
+
+                const data = {
+                    token: info.token,
+                    playerCard: hand[i],
+                    enemyCard: enemyCard
+                };
+
+                socket.emit('playCard', data);
+
+                let receivedEmit = false;
+                socket.on('playCard', (data) => {
+                    if (!receivedEmit) {
+                        if (data.error) {
+                            alert(data.result.msg);
+                            receivedEmit = true;
+                        } else {
+                            playersDiv.childNodes[i].style.display = 'none';
+                            enemysDiv.childNodes[i].style.display = 'none';
+                            pickEnemyCard();
+                            receivedEmit = true;
+                        }
+                    }
+                });
+            });
+        }
+    }
+
+    const hanldleRemoveCards = () => {
+
+    }
+
     const loadEnemyCard = (card) => {
         let img = document.createElement('img');
 
@@ -79,52 +121,16 @@
         });
     }
 
-    const listenHand = () => {
-        let calculator = 0;
-        for (let card of playersDiv.children) {
-
-            
-            card.addEventListener('click', (e) => {
-                e.preventDefault();
-
-                console.log(hand[calculator])
-                const data = {
-                    token: info.token,
-                    playerCard: hand[calculator],
-                    enemyCard: enemyCard
-                };
-
-                calculator++;
-                
-                socket.emit('playCard', data);
-
-                let receivedEmit = false;
-                socket.on('playCard', (data) => {
-                    if (!receivedEmit) {
-                        if (data.error) {
-                            alert(data.result.msg);
-                            receivedEmit = true;
-                        } else {
-                            playersDiv.removeChild(card);
-                            enemysDiv.removeChild(enemyElementArray[0]);
-                            enemyElementArray.pop();
-                            pickEnemyCard();
-                            receivedEmit = true;
-                        }
-                    }
-                });
-            });
-
-        }
-    }
-
     const loadPlayerCard = (card) => {
         let button = document.createElement('button');
         let img = document.createElement('img');
 
+        button.classList.add(card.number);
+
         img.src = card.path;
         img.width = 100;
         img.height = 200;
+        img.classList.add(card.number);
 
         button.appendChild(img);
         playersDiv.appendChild(button);
@@ -153,7 +159,6 @@
                 if (!data.error) {
                     localStorage.setItem('valiaikainen', JSON.stringify(data.result));
                     loadPlayerCard(JSON.parse(localStorage.getItem('valiaikainen')));
-                    listenHand();
                     receivedEmit = true;
                 } else {
                     receivedEmit = true;
@@ -181,8 +186,15 @@
         pickButton.addEventListener('click', (e) => {
             e.preventDefault();
 
+
             pickCardToPlayer();
+            
+
+            
         });
+
+        setInterval(() => { listenHand(); }, 1000);
+        // listenHand();
     }
 
     document.addEventListener('DOMContentLoaded', main);
