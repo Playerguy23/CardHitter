@@ -81,12 +81,9 @@
     const listenHand = () => {
         for (let i = 0; i < playerElementArray.length; i++) {
             const card = playerElementArray[i];
-            console.log(playerElementArray[i])
 
             card.addEventListener('click', (e) => {
                 e.preventDefault();
-
-                console.log('hello')
 
                 const data = {
                     token: info.token,
