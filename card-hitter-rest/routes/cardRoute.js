@@ -103,7 +103,7 @@ router.post('/out', userMiddleware.checkLogin, (req, res, next) => {
 
                 return res.status(200).send({ msg: 'Kortit poistettu pelistä!' });
             } else {
-                return res.status(400).send({ msg: 'Kotit eivät olleet samat.' });
+                return res.status(400).send({ msg: 'Kortit eivät olleet samat.' });
             }
         });
     });
