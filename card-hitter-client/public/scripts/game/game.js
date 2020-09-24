@@ -12,6 +12,8 @@
 
     let playerElementArray = [];
     let enemyElementArray = [];
+    let removablePlayerCards = [];
+    let removableEnemyCards = [];
     let hand = [];
     let enemyCard;
 
@@ -52,7 +54,7 @@
         enemysDiv.appendChild(img);
         enemyElementArray.push(img);
     }
-    
+
     const pickEnemyCard = () => {
         localStorage.setItem('valiaikainenENEMY', 'test');
         const gameId = localStorage.getItem('game_id');
@@ -71,15 +73,46 @@
                     enemyCard = data.result;
                     loadEnemyCard(enemyCard);
                     emitReceived = true;
+                    return;
                 } else {
                     alert(data.result.msg);
                     emitReceived = true;
+                    return;
                 }
             }
         });
     }
 
-    function listenHand() {
+    const removePlayerComponents = () => {
+        for (let i = 0; i < playerElementArray.length; i++) {
+
+            const index = removablePlayerCards.indexOf(playerElementArray[i]);
+            if (index > -1) {
+                playersDiv.removeChild(playerElementArray[i]);
+                playerElementArray = playerElementArray.filter(c => c !== playerElementArray[i]);
+                removablePlayerCards = removablePlayerCards.filter(rc => rc !== removablePlayerCards[i]);
+            }
+        }
+    }
+
+    const removeEnemyComponents = () => {
+        for (let i = 0; i < enemyElementArray.length; i++) {
+            const index = removableEnemyCards.indexOf(enemyElementArray[i]);
+            if (index > -1) {
+                enemysDiv.removeChild(enemyElementArray[i]);
+                enemyElementArray = enemyElementArray.filter(c => c !== enemyElementArray[i]);
+                removableEnemyCards = removableEnemyCards.filter(rc => rc !== removableEnemyCards[i]);
+                enemyCard = {};
+            }
+        }
+    }
+
+    const removeElements = () => {
+        removePlayerComponents();
+        removeEnemyComponents();
+    }
+
+    const listenHand = () => {
         for (let i = 0; i < playerElementArray.length; i++) {
             playerElementArray[i].addEventListener('click', (e) => {
                 e.preventDefault();
@@ -100,8 +133,13 @@
                             receivedEmit = true;
                         } else {
                             playersDiv.childNodes[i].style.display = 'none';
-                            enemysDiv.childNodes[i].style.display = 'none';
-                            pickEnemyCard();
+                            for (let enemy of enemyElementArray) {
+                                enemy.style.display = 'none';
+                            }
+
+                            removablePlayerCards.push(playersDiv.childNodes[i]);
+                            removableEnemyCards.push(enemysDiv.childNodes[i]);
+
                             receivedEmit = true;
                         }
                     }
@@ -168,7 +206,6 @@
             e.preventDefault();
 
             createDeck();
-            
         });
 
         pickButton.addEventListener('click', (e) => {
@@ -176,10 +213,16 @@
 
 
             pickCardToPlayer();
-            pickEnemyCard();
+
+            if (enemyElementArray.length < 1) {
+                pickEnemyCard();
+            }
         });
 
-        setInterval(() => { listenHand(); }, 1000);
+        setInterval(() => {
+            removeElements();
+            listenHand();
+        }, 100);
     }
 
     document.addEventListener('DOMContentLoaded', main);
