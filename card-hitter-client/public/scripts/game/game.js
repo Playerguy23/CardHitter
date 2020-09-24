@@ -42,6 +42,43 @@
         });
     }
 
+    const loadEnemyCard = (card) => {
+        let img = document.createElement('img');
+
+        img.src = card.path;
+        img.width = 100;
+        img.height = 200;
+
+        enemysDiv.appendChild(img);
+        enemyElementArray.push(img);
+    }
+    
+    const pickEnemyCard = () => {
+        localStorage.setItem('valiaikainenENEMY', 'test');
+        const gameId = localStorage.getItem('game_id');
+
+        const data = {
+            token: info.token,
+            userGameId: gameId
+        };
+
+        socket.emit('enemyPick', data);
+
+        let emitReceived = false;
+        socket.on('enemyPick', (data) => {
+            if (!emitReceived) {
+                if (!data.error) {
+                    enemyCard = data.result;
+                    loadEnemyCard(enemyCard);
+                    emitReceived = true;
+                } else {
+                    alert(data.result.msg);
+                    emitReceived = true;
+                }
+            }
+        });
+    }
+
     function listenHand() {
         for (let i = 0; i < playerElementArray.length; i++) {
             playerElementArray[i].addEventListener('click', (e) => {
@@ -71,43 +108,6 @@
                 });
             });
         }
-    }
-
-    const loadEnemyCard = (card) => {
-        let img = document.createElement('img');
-
-        img.src = card.path;
-        img.width = 100;
-        img.height = 200;
-
-        enemysDiv.appendChild(img);
-        enemyElementArray.push(img);
-    }
-
-    const pickEnemyCard = () => {
-        localStorage.setItem('valiaikainenENEMY', 'test');
-        const gameId = localStorage.getItem('game_id');
-
-        const data = {
-            token: info.token,
-            userGameId: gameId
-        };
-
-        socket.emit('enemyPick', data);
-
-        let emitReceived = false;
-        socket.on('enemyPick', (data) => {
-            if (!emitReceived) {
-                if (!data.error) {
-                    enemyCard = data.result;
-                    loadEnemyCard(enemyCard);
-                    emitReceived = true;
-                } else {
-                    alert(data.result.msg);
-                    emitReceived = true;
-                }
-            }
-        });
     }
 
     const loadPlayerCard = (card) => {
@@ -168,7 +168,7 @@
             e.preventDefault();
 
             createDeck();
-            pickEnemyCard();
+            
         });
 
         pickButton.addEventListener('click', (e) => {
@@ -176,6 +176,7 @@
 
 
             pickCardToPlayer();
+            pickEnemyCard();
         });
 
         setInterval(() => { listenHand(); }, 1000);
