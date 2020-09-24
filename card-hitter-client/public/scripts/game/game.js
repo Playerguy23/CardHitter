@@ -15,7 +15,7 @@
     let removablePlayerCards = [];
     let removableEnemyCards = [];
     let hand = [];
-    let enemyCard;
+    let enemyCard = [];
 
     const createDeck = () => {
 
@@ -53,6 +53,8 @@
 
         enemysDiv.appendChild(img);
         enemyElementArray.push(img);
+
+        enemyCard.push(card);
     }
 
     const pickEnemyCard = () => {
@@ -70,8 +72,8 @@
         socket.on('enemyPick', (data) => {
             if (!emitReceived) {
                 if (!data.error) {
-                    enemyCard = data.result;
-                    loadEnemyCard(enemyCard);
+                    localStorage.setItem('valiaikainenENEMY', JSON.stringify(data.result));
+                    loadEnemyCard(JSON.parse(localStorage.getItem('valiaikainenENEMY')));
                     emitReceived = true;
                     return;
                 } else {
@@ -90,7 +92,7 @@
             if (index > -1) {
                 playersDiv.removeChild(playerElementArray[i]);
                 playerElementArray = playerElementArray.filter(c => c !== playerElementArray[i]);
-                removablePlayerCards = removablePlayerCards.filter(rc => rc !== removablePlayerCards[i]);
+                removablePlayerCards = removablePlayerCards.filter(rc => rc !== removablePlayerCards[index]);
             }
         }
     }
@@ -101,8 +103,8 @@
             if (index > -1) {
                 enemysDiv.removeChild(enemyElementArray[i]);
                 enemyElementArray = enemyElementArray.filter(c => c !== enemyElementArray[i]);
-                removableEnemyCards = removableEnemyCards.filter(rc => rc !== removableEnemyCards[i]);
-                enemyCard = {};
+                removableEnemyCards = removableEnemyCards.filter(rc => rc !== removableEnemyCards[index]);
+                enemyCard.pop();
             }
         }
     }
@@ -120,7 +122,7 @@
                 const data = {
                     token: info.token,
                     playerCard: hand[i],
-                    enemyCard: enemyCard
+                    enemyCard: enemyCard[0]
                 };
 
                 socket.emit('playCard', data);
@@ -138,7 +140,7 @@
                             }
 
                             removablePlayerCards.push(playersDiv.childNodes[i]);
-                            removableEnemyCards.push(enemysDiv.childNodes[i]);
+                            removableEnemyCards.push(enemysDiv.childNodes[0]);
 
                             receivedEmit = true;
                         }
@@ -214,14 +216,14 @@
 
             pickCardToPlayer();
 
-            if (enemyElementArray.length < 1) {
+            if (enemyCard.length < 1) {
                 pickEnemyCard();
             }
         });
 
         setInterval(() => {
-            removeElements();
             listenHand();
+            removeElements();
         }, 100);
     }
 
