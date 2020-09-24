@@ -3,6 +3,7 @@
 (function () {
     let socket = io();
     const info = JSON.parse(localStorage.getItem('token'));
+    const gameId = localStorage.getItem('game_id');
 
     let playersDiv;
     let enemysDiv;
@@ -15,7 +16,6 @@
     let enemyCard;
 
     const createDeck = () => {
-        const gameId = localStorage.getItem('game_id');
 
         const data = {
             token: info.token,
@@ -130,7 +130,6 @@
 
     const pickCardToPlayer = () => {
         localStorage.setItem('valiaikainen', 'test');
-        const gameId = localStorage.getItem('game_id');
 
         const data = {
             token: info.token,
