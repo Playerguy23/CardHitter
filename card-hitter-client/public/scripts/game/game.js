@@ -17,6 +17,8 @@
     let hand = [];
     let enemyCard = [];
 
+    let enemyRendered = false;
+
     const createDeck = () => {
 
         const data = {
@@ -74,6 +76,7 @@
                 if (!data.error) {
                     localStorage.setItem('valiaikainenENEMY', JSON.stringify(data.result));
                     loadEnemyCard(JSON.parse(localStorage.getItem('valiaikainenENEMY')));
+                    enemyRendered = true;
                     emitReceived = true;
                     return;
                 } else {
@@ -196,6 +199,33 @@
         });
     }
 
+    const disableBeforeEnemy = () => {
+        for (let card of playersDiv.children) {
+            card.disabled = true;
+        }
+        pickButton.disabled = true;
+    }
+
+    const enableAfterEnemy = () => {
+        for (let card of playersDiv.children) {
+            card.disabled = false;
+        }
+        pickButton.disabled = false;
+    }
+
+    const timer = () => {
+        setInterval(() => {
+            if (enemyRendered) {
+                enableAfterEnemy();
+            } else {
+                disableBeforeEnemy();
+            }
+
+            listenHand();
+            removeElements();
+        }, 100);
+    }
+
     const main = () => {
         enemysDiv = document.getElementById('enemy-card');
         playersDiv = document.getElementById('player-cards');
@@ -213,18 +243,15 @@
         pickButton.addEventListener('click', (e) => {
             e.preventDefault();
 
+            timer();
 
             pickCardToPlayer();
 
             if (enemyCard.length < 1) {
+                enemyRendered = false;
                 pickEnemyCard();
             }
         });
-
-        setInterval(() => {
-            listenHand();
-            removeElements();
-        }, 100);
     }
 
     document.addEventListener('DOMContentLoaded', main);
