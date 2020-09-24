@@ -90,8 +90,8 @@
 
     const removePlayerComponents = () => {
         for (let i = 0; i < playerElementArray.length; i++) {
-
             const index = removablePlayerCards.indexOf(playerElementArray[i]);
+
             if (index > -1) {
                 playersDiv.removeChild(playerElementArray[i]);
                 playerElementArray = playerElementArray.filter(c => c !== playerElementArray[i]);
@@ -103,6 +103,7 @@
     const removeEnemyComponents = () => {
         for (let i = 0; i < enemyElementArray.length; i++) {
             const index = removableEnemyCards.indexOf(enemyElementArray[i]);
+
             if (index > -1) {
                 enemysDiv.removeChild(enemyElementArray[i]);
                 enemyElementArray = enemyElementArray.filter(c => c !== enemyElementArray[i]);
