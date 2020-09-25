@@ -23,6 +23,16 @@ const findById = (id, callback) => {
     });
 }
 
+const findActiveById = (id, callback) => {
+    db.query(cardQueries.findActiveById, [id], (error, result) => {
+        if (error) {
+            throw error;
+        }
+
+        return callback(result);
+    });
+}
+
 const findByUserGameId = (userGameId, callback) => {
     db.query(cardQueries.findByUserGameId, [userGameId], (error, result) => {
         if (error) {
@@ -96,12 +106,13 @@ const setOutOfGameById = (id) => {
 }
 
 const createDeck = (userGameId) => {
-    for (let i = 1; i <= 40; i++) {
-        const card = deckHandle.provideOne();
+    const cardData = deckHandle.provideDeck();
+    for (let i = 1; i <= cardData.size; i++) {
+
 
         const details = {
-            name: card.name,
-            path: card.path,
+            name: cardData.cards[i - 1].name,
+            path: cardData.cards[i - 1].path,
             number: i,
             userGameId: userGameId
         };
@@ -138,6 +149,7 @@ module.exports = {
     findAllPlayerCardsByUserCardOrderedByNumberInDesc: findAllPlayerCardsByUserCardOrderedByNumberInDesc,
     findForGameByUserGameIdOrderedByNumberInDesc: findForGameByUserGameIdOrderedByNumberInDesc,
     findById: findById,
+    findActiveById: findActiveById,
     setOutOfGameById: setOutOfGameById,
     setAsEnemysCardByIdAndNumber: setAsEnemysCardByIdAndNumber,
     resetGame: resetGame

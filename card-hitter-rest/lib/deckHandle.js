@@ -16,13 +16,20 @@ const suffleDeck = () => {
     // TODO: for loop that goes from 0 to random number
 }
 
-const provideOne = () => {
-    const card = deckAssets[deck[deck.length - 1]];
+const provideDeck = () => {
+    const card = [];
+    for(let i = 0; i < deck.length; i++) {
+        card.push(deckAssets[deck[i]]);
+    }
 
-    return card;
+    const data = {
+        size: deck.length,
+        cards: card
+    }
+    return data;
 }
 
 
 module.exports = {
-    provideOne: provideOne
+    provideDeck: provideDeck
 }

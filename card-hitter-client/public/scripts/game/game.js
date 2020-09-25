@@ -112,12 +112,6 @@
             }
         }
     }
-
-    const removeElements = () => {
-        removePlayerComponents();
-        removeEnemyComponents();
-    }
-
     const listenHand = () => {
         for (let i = 0; i < playerElementArray.length; i++) {
             playerElementArray[i].addEventListener('click', (e) => {
@@ -136,7 +130,7 @@
                     if (!receivedEmit) {
                         if (data.error) {
                             alert(data.result.msg);
-                            receivedEmit = true;
+                            return;
                         } else {
                             playersDiv.childNodes[i].style.display = 'none';
                             for (let enemy of enemyElementArray) {
@@ -145,13 +139,18 @@
 
                             removablePlayerCards.push(playersDiv.childNodes[i]);
                             removableEnemyCards.push(enemysDiv.childNodes[0]);
-
-                            receivedEmit = true;
                         }
+                        receivedEmit = true;
+                        return;
                     }
                 });
             });
         }
+    }
+
+    const removeElements = () => {
+        removePlayerComponents();
+        removeEnemyComponents();
     }
 
     const loadPlayerCard = (card) => {
@@ -198,6 +197,8 @@
                 }
             }
         });
+
+        listenHand();
     }
 
     const disableBeforeEnemy = () => {
@@ -222,9 +223,8 @@
                 disableBeforeEnemy();
             }
 
-            listenHand();
             removeElements();
-        }, 100);
+        }, 500);
     }
 
     const main = () => {

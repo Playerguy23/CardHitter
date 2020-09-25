@@ -95,15 +95,19 @@ router.post('/out', userMiddleware.checkLogin, (req, res, next) => {
     const playerCardId = req.query.playerCardId;
     const enemyCardId = req.query.enemyCardId;
 
-    cardService.findById(playerCardId, (resultA) => {
-        cardService.findById(enemyCardId, (resultB) => {
-            if (resultA[0].name === resultB[0].name) {
-                cardService.setOutOfGameById(playerCardId);
-                cardService.setOutOfGameById(enemyCardId);
+    cardService.findActiveById(playerCardId, (resultA) => {
+        cardService.findActiveById(enemyCardId, (resultB) => {
+            if (resultA.length && resultB.length) {
+                if (resultA[0].name === resultB[0].name) {
+                    cardService.setOutOfGameById(playerCardId);
+                    cardService.setOutOfGameById(enemyCardId);
 
-                return res.status(200).send({ msg: 'Kortit poistettu pelistä!' });
+                    return res.status(200).send({ msg: 'Kortit poistettu pelistä!' });
+                } else {
+                    return res.status(400).send({ msg: 'Kortit eivät olleet samat.' });
+                }
             } else {
-                return res.status(400).send({ msg: 'Kortit eivät olleet samat.' });
+                return res.status(400).send({ msg: 'Kortteja ei löytynyt!' });
             }
         });
     });
