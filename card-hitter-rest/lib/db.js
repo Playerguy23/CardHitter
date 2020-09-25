@@ -13,6 +13,25 @@ const connection = msyql.createConnection({
     database: 'card_hitter'
 });
 
-connection.connect();
+const startConnection = () => {
+    let newConnection = false;
+
+    if (!connection) {
+        newConnection = true;
+    }
+
+    try {
+        connection.connect();
+    } catch (error) {
+        console.log(error);
+        console.log('Ongelma ytheydessä');
+    } finally {
+        if (newConnection && connection) {
+            connection.end()
+        }
+    }
+}
+
+startConnection();
 
 module.exports = connection;

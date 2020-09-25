@@ -60,7 +60,7 @@ router.put('/deck/:userGameId', userMiddleware.checkLogin, cardMiddleware.checkU
 router.post('/player/pick/:userGameId', userMiddleware.checkLogin, cardMiddleware.checkUserGameId, (req, res, next) => {
     const userGameId = req.params.userGameId;
 
-    cardService.findForGameByUserGameIdOrderedByNumberInDesc(userGameId, (result) => {
+    cardService.findForUserByUserGameIdOrderedByNumberInDesc(userGameId, (result) => {
         if (result.length) {
             cardService.setAsPlayersCardByUserGameIdAndNumber(result[0].id);
             return res.status(200).send(result[0]);
@@ -73,7 +73,7 @@ router.post('/player/pick/:userGameId', userMiddleware.checkLogin, cardMiddlewar
 router.post('/enemy/pick/:userGameId', userMiddleware.checkLogin, cardMiddleware.checkUserGameId, (req, res, next) => {
     const userGameId = req.params.userGameId;
 
-    cardService.findForGameByUserGameIdOrderedByNumberInDesc(userGameId, (result) => {
+    cardService.findForEnemyByUserGameIdOrderedByNumberInDesc(userGameId, (result) => {
         if (result.length) {
             cardService.setAsEnemysCardByIdAndNumber(result[0].id);
             return res.status(200).send(result[0]);

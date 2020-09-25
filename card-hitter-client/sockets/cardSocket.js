@@ -106,6 +106,8 @@ const sockets = (socket) => {
             }
         }
 
+        console.log(playerCard);
+        console.log(enemyCard);
         fetch(`${baseUrl.url}/card/out?playerCardId=${playerCard.id}&enemyCardId=${enemyCard.id}`, config)
             .then(response => {
                 if (response.ok) {
@@ -113,6 +115,8 @@ const sockets = (socket) => {
                         const data = {
                             error: false
                         };
+
+                        console.log(result)
 
                         socket.emit('playCard', data);
                     });

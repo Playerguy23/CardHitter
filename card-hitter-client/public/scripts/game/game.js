@@ -9,6 +9,7 @@
     let enemysDiv;
     let pickButton;
     let suffleButton;
+    let removableButton;
 
     let playerElementArray = [];
     let enemyElementArray = [];
@@ -17,7 +18,8 @@
     let hand = [];
     let enemyCard = [];
 
-    let enemyRendered = false;
+    // let enemyRendered = false;
+    let cardsDeleted = false;
 
     const createDeck = () => {
 
@@ -59,6 +61,38 @@
         enemyCard.push(card);
     }
 
+    const listenHand = () => {
+
+        for (let i = 0; i < playersDiv.childNodes.length; i++) {
+            playersDiv.childNodes[i].addEventListener('click', (e) => {
+                e.preventDefault();
+
+                const data = {
+                    token: info.token,
+                    playerCard: hand[i],
+                    enemyCard: enemyCard[0]
+                };
+
+                socket.emit('playCard', data);
+                removableButton = playerElementArray[i];
+            });
+        }
+    }
+
+    const disableBeforeEnemy = () => {
+        for (let card of playersDiv.children) {
+            card.disabled = true;
+        }
+        pickButton.disabled = true;
+    }
+
+    const enableAfterEnemy = () => {
+        for (let card of playersDiv.children) {
+            card.disabled = false;
+        }
+        pickButton.disabled = false;
+    }
+
     const pickEnemyCard = () => {
         localStorage.setItem('valiaikainenENEMY', 'test');
         const gameId = localStorage.getItem('game_id');
@@ -74,9 +108,13 @@
         socket.on('enemyPick', (data) => {
             if (!emitReceived) {
                 if (!data.error) {
+                    disableBeforeEnemy();
+
                     localStorage.setItem('valiaikainenENEMY', JSON.stringify(data.result));
                     loadEnemyCard(JSON.parse(localStorage.getItem('valiaikainenENEMY')));
-                    enemyRendered = true;
+                    localStorage.removeItem('valiaikainenENEMY');
+                    enableAfterEnemy();
+                    // enemyRendered = true;
                     emitReceived = true;
                     return;
                 } else {
@@ -96,6 +134,8 @@
                 playersDiv.removeChild(playerElementArray[i]);
                 playerElementArray = playerElementArray.filter(c => c !== playerElementArray[i]);
                 removablePlayerCards = removablePlayerCards.filter(rc => rc !== removablePlayerCards[index]);
+                hand = hand.filter(c => c !== hand[i]);
+                cardsDeleted = true;
             }
         }
     }
@@ -110,41 +150,6 @@
                 removableEnemyCards = removableEnemyCards.filter(rc => rc !== removableEnemyCards[index]);
                 enemyCard.pop();
             }
-        }
-    }
-    const listenHand = () => {
-        for (let i = 0; i < playerElementArray.length; i++) {
-            playerElementArray[i].addEventListener('click', (e) => {
-                e.preventDefault();
-
-                const data = {
-                    token: info.token,
-                    playerCard: hand[i],
-                    enemyCard: enemyCard[0]
-                };
-
-                socket.emit('playCard', data);
-
-                let receivedEmit = false;
-                socket.on('playCard', (data) => {
-                    if (!receivedEmit) {
-                        if (data.error) {
-                            alert(data.result.msg);
-                            return;
-                        } else {
-                            playersDiv.childNodes[i].style.display = 'none';
-                            for (let enemy of enemyElementArray) {
-                                enemy.style.display = 'none';
-                            }
-
-                            removablePlayerCards.push(playersDiv.childNodes[i]);
-                            removableEnemyCards.push(enemysDiv.childNodes[0]);
-                        }
-                        receivedEmit = true;
-                        return;
-                    }
-                });
-            });
         }
     }
 
@@ -169,6 +174,19 @@
         playerElementArray.push(button);
 
         hand.push(card);
+
+        button.addEventListener('click', (e) => {
+            e.preventDefault();
+
+            const data = {
+                token: info.token,
+                playerCard: hand[hand.length - 1],
+                enemyCard: enemyCard[0]
+            };
+
+            socket.emit('playCard', data);
+            removableButton = playerElementArray[playerElementArray.length - 1];
+        });
     }
 
     const pickCardToPlayer = () => {
@@ -190,6 +208,7 @@
                 if (!data.error) {
                     localStorage.setItem('valiaikainen', JSON.stringify(data.result));
                     loadPlayerCard(JSON.parse(localStorage.getItem('valiaikainen')));
+                    listenHand();
                     receivedEmit = true;
                 } else {
                     receivedEmit = true;
@@ -197,34 +216,6 @@
                 }
             }
         });
-
-        listenHand();
-    }
-
-    const disableBeforeEnemy = () => {
-        for (let card of playersDiv.children) {
-            card.disabled = true;
-        }
-        pickButton.disabled = true;
-    }
-
-    const enableAfterEnemy = () => {
-        for (let card of playersDiv.children) {
-            card.disabled = false;
-        }
-        pickButton.disabled = false;
-    }
-
-    const timer = () => {
-        setInterval(() => {
-            if (enemyRendered) {
-                enableAfterEnemy();
-            } else {
-                disableBeforeEnemy();
-            }
-
-            removeElements();
-        }, 500);
     }
 
     const main = () => {
@@ -244,13 +235,39 @@
         pickButton.addEventListener('click', (e) => {
             e.preventDefault();
 
-            timer();
-
-            pickCardToPlayer();
-
             if (enemyCard.length < 1) {
-                enemyRendered = false;
+                // enemyRendered = false;
                 pickEnemyCard();
+            }
+            pickCardToPlayer();
+        });
+
+        setInterval(() => {
+            removeElements();
+            if (cardsDeleted) {
+                // listenHand();
+                cardsDeleted = false;
+            }
+        }, 500);
+
+        let receivedEmit = false;
+        socket.on('playCard', (data) => {
+            if (!receivedEmit) {
+                if (data.error) {
+                    alert(data.result.msg);
+                    return;
+                } else {
+                    removableButton.style.display = 'none';
+                    for (let enemy of enemyElementArray) {
+                        enemy.style.display = 'none';
+                    }
+
+                    removablePlayerCards.push(removableButton);
+                    removableEnemyCards.push(enemysDiv.childNodes[0]);
+                    receivedEmit = true;
+                    console.log(removablePlayerCards)
+                    return;
+                }
             }
         });
     }

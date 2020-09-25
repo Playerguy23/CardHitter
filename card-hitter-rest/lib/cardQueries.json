@@ -1,7 +1,8 @@
 {
     "findById": "SELECT * FROM user_card WHERE id = ?;",
     "findActiveById": "SELECT * FROM user_card WHERE id = ? AND active;",
-    "findForGameByUserGameIdOrderedByNumberInDesc": "SELECT * FROM user_card WHERE active = 1 AND on_game = 0 AND user_card = 0 AND user_game_id = ? ORDER BY number DESC;",
+    "findForUserByUserGameIdOrderedByNumberInDesc": "SELECT * FROM user_card WHERE active AND !on_game AND !user_card AND user_game_id = ? ORDER BY number DESC;",
+    "findForEnemyByUserGameIdOrderedByNumberInDesc": "SELECT * FROM user_card WHERE active AND !on_game AND !user_card AND user_game_id = ? ORDER BY number DESC;",
     "findAllPlayerCardsByUserCardOrderedByNumberInDesc": "SELECT * from user_card WHERE active = 1 AND user_game_id = 1 AND on_game = 1 AND user_game_id = ? ORDER BY number DESC;",
     "findAddableCard": "SELECT * FROM user_card WHERE active = 1 AND on_game = 0 AND number = ?;",
     "findByUserGameId": "SELECT * FROM user_card WHERE user_game_id = ?;",

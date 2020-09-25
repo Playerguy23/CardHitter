@@ -53,8 +53,18 @@ const findAllPlayerCardsByUserCardOrderedByNumberInDesc = (userGameId, callback)
     });
 }
 
-const findForGameByUserGameIdOrderedByNumberInDesc = (userGameId, callback) => {
-    db.query(cardQueries.findForGameByUserGameIdOrderedByNumberInDesc, [userGameId], (error, result) => {
+const findForUserByUserGameIdOrderedByNumberInDesc = (userGameId, callback) => {
+    db.query(cardQueries.findForUserByUserGameIdOrderedByNumberInDesc, [userGameId], (error, result) => {
+        if (error) {
+            throw error;
+        }
+
+        return callback(result);
+    });
+}
+
+const findForEnemyByUserGameIdOrderedByNumberInDesc = (userGameId, callback) => {
+    db.query(cardQueries.findForEnemyByUserGameIdOrderedByNumberInDesc, [userGameId], (error, result) => {
         if (error) {
             throw error;
         }
@@ -108,8 +118,6 @@ const setOutOfGameById = (id) => {
 const createDeck = (userGameId) => {
     const cardData = deckHandle.provideDeck();
     for (let i = 1; i <= cardData.size; i++) {
-
-
         const details = {
             name: cardData.cards[i - 1].name,
             path: cardData.cards[i - 1].path,
@@ -124,7 +132,6 @@ const createDeck = (userGameId) => {
 }
 
 const resetGame = (userGameId) => {
-
     findByUserGameId(userGameId, (result) => {
         if (result.length) {
             for (let i = 0; i < result.length; i++) {
@@ -147,7 +154,8 @@ module.exports = {
     createDeck: createDeck,
     setAsPlayersCardByUserGameIdAndNumber: setAsPlayersCardByUserGameIdAndNumber,
     findAllPlayerCardsByUserCardOrderedByNumberInDesc: findAllPlayerCardsByUserCardOrderedByNumberInDesc,
-    findForGameByUserGameIdOrderedByNumberInDesc: findForGameByUserGameIdOrderedByNumberInDesc,
+    findForUserByUserGameIdOrderedByNumberInDesc: findForUserByUserGameIdOrderedByNumberInDesc,
+    findForEnemyByUserGameIdOrderedByNumberInDesc: findForEnemyByUserGameIdOrderedByNumberInDesc,
     findById: findById,
     findActiveById: findActiveById,
     setOutOfGameById: setOutOfGameById,
