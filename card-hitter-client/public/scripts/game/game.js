@@ -1,6 +1,7 @@
 'use strict';
 
 (function () {
+    const baseUrl = 'http://localhost:5000/api';
     let socket = io();
     const info = JSON.parse(localStorage.getItem('token'));
     const gameId = localStorage.getItem('game_id');
@@ -22,28 +23,26 @@
     let cardsDeleted = false;
 
     const createDeck = () => {
-
-        const data = {
-            token: info.token,
-            userGameId: gameId
+        const config = {
+            method: 'PUT',
+            headers: {
+                'Authorization': `Bearer ${info.token}`
+            }
         };
 
-        socket.emit('suffle', data);
-
-        let receivedEmit = false;
-        socket.on('suffle', (data) => {
-
-            if (!receivedEmit) {
-                if (data.error) {
-                    alert(data.result.msg);
-                    window.location.href = '/home';
-                } else {
+        fetch(`${baseUrl}/card/deck/${gameId}`, config).then(response => {
+            if (response.ok) {
+                response.json().then(result => {
                     pickButton.style.display = 'block';
 
                     suffleButton.disabled = true;
                     suffleButton.style.display = 'none';
-                }
-                receivedEmit = true;
+                });
+            } else {
+                response.json().then(result => {
+                    alert(result.msg);
+                    window.location.href = '/home';
+                });
             }
         });
     }
@@ -102,26 +101,32 @@
             userGameId: gameId
         };
 
-        socket.emit('enemyPick', data);
+        const config = {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${info.token}`
+            }
+        };
 
-        let emitReceived = false;
-        socket.on('enemyPick', (data) => {
-            if (!emitReceived) {
-                if (!data.error) {
+        fetch(`${baseUrl}/card/enemy/pick/${gameId}`, config).then(response => {
+            if (response.ok) {
+                response.json().then(result => {
                     disableBeforeEnemy();
 
-                    localStorage.setItem('valiaikainenENEMY', JSON.stringify(data.result));
+                    localStorage.setItem('valiaikainenENEMY', JSON.stringify(result));
                     loadEnemyCard(JSON.parse(localStorage.getItem('valiaikainenENEMY')));
                     localStorage.removeItem('valiaikainenENEMY');
                     enableAfterEnemy();
                     // enemyRendered = true;
                     emitReceived = true;
                     return;
-                } else {
+                });
+            } else {
+                response.json().then(result => {
                     alert(data.result.msg);
                     emitReceived = true;
                     return;
-                }
+                });
             }
         });
     }

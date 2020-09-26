@@ -7,67 +7,6 @@ const fetch = require('node-fetch');
 const baseUrl = require('../lib/baseUrl.json');
 
 const sockets = (socket) => {
-
-    socket.on('suffle', ({ token, userGameId }) => {
-        const config = {
-            method: 'PUT',
-            headers: {
-                'Authorization': `Bearer ${token}`
-            }
-        };
-
-        fetch(`${baseUrl.url}/card/deck/${userGameId}`, config).then(response => {
-            if (response.ok) {
-                response.json().then(result => {
-                    const data = {
-                        error: false
-                    };
-                    socket.emit('suffle', data);
-                });
-            } else {
-                response.json().then(result => {
-                    const data = {
-                        error: true,
-                        result: result
-                    };
-
-                    socket.emit('suffle', data);
-                });
-            }
-        });
-    });
-
-    socket.on('enemyPick', ({ token, userGameId }) => {
-        const config = {
-            method: 'POST',
-            headers: {
-                'Authorization': `Bearer ${token}`
-            }
-        };
-
-        fetch(`${baseUrl.url}/card/enemy/pick/${userGameId}`, config).then(response => {
-            if (response.ok) {
-                response.json().then(result => {
-                    const data = {
-                        error: false,
-                        result: result
-                    };
-
-                    socket.emit('enemyPick', data);
-                });
-            } else {
-                response.json().then(result => {
-                    const data = {
-                        error: true,
-                        result: result
-                    };
-
-                    socket.emit('enemyPick', data);
-                });
-            }
-        });
-    });
-
     socket.on('pickCard', ({ token, userGameId }) => {
         const config = {
             method: 'POST',
