@@ -9,7 +9,6 @@
     let enemysDiv;
     let pickButton;
     let suffleButton;
-    let removableButton;
 
     let playerElementArray = [];
     let enemyElementArray = [];
