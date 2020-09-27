@@ -91,7 +91,7 @@ router.post('/out/:cardId', userMiddleware.checkLogin, cardMiddleware.checkCardI
     return res.status(200).send({ msg: 'Kortti poistettu pelistä!' });
 });
 
-router.post('/out', userMiddleware.checkLogin, (req, res, next) => {
+router.post('/out', userMiddleware.checkLogin, cardMiddleware.checkEnemyAndPlayerCardId, (req, res, next) => {
     const playerCardId = req.query.playerCardId;
     const enemyCardId = req.query.enemyCardId;
 
@@ -107,7 +107,7 @@ router.post('/out', userMiddleware.checkLogin, (req, res, next) => {
                     return res.status(400).send({ msg: 'Kortit eivät olleet samat.' });
                 }
             } else {
-                return res.status(400).send({ msg: 'Kortteja ei löytynyt!' });
+                return res.status(404).send({ msg: 'Kortteja ei löytynyt!' });
             }
         });
     });
