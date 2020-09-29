@@ -50,8 +50,8 @@ const createGame = (userId, callback) => {
     });
 }
 
-const setGameAsLost = (userId) => {
-    db.query(userGameQueries.setAsLost, [userId], (error, result) => {
+const setGameAsLost = (id) => {
+    db.query(userGameQueries.setAsLost, [id], (error, result) => {
         if (error) {
             throw error;
         }

@@ -17,8 +17,6 @@
     let hand = [];
     let enemyCard = [];
 
-    let cardsDeleted = false;
-
     const createDeck = () => {
         const config = {
             method: 'PUT',
@@ -112,7 +110,6 @@
                 playerElementArray = playerElementArray.filter(c => c !== playerElementArray[i]);
                 removablePlayerCards = removablePlayerCards.filter(rc => rc !== removablePlayerCards[index]);
                 hand = hand.filter(c => c !== hand[i]);
-                cardsDeleted = true;
             }
         }
     }
@@ -156,7 +153,6 @@
             e.preventDefault();
 
             let handIndex = hand.indexOf(card);
-            console.log('hello')
 
             const config = {
                 method: 'POST',
@@ -178,8 +174,6 @@
 
                             removablePlayerCards.push(playerElementArray[handIndex]);
                             removableEnemyCards.push(enemysDiv.childNodes[0]);
-                            receivedEmit = true;
-                            console.log(removablePlayerCards)
                             return;
                         });
                     } else {
@@ -207,8 +201,14 @@
         };
 
         fetch(`${baseUrl}/card/player/pick/${gameId}`, config).then(response => {
-            if(response.status === 401) {
+            if (response.status === 401) {
                 window.location.href = '/login';
+                return;
+            }
+
+            if (response.status === 406) {
+                alert('Hävisit pelin!');
+                window.location.href = '/home';
                 return;
             }
 
@@ -216,7 +216,6 @@
                 response.json().then(result => {
                     localStorage.setItem('valiaikainen', JSON.stringify(result));
                     loadPlayerCard(JSON.parse(localStorage.getItem('valiaikainen')));
-                    listenHand();
                 });
             } else {
                 response.json().then(result => {
@@ -243,19 +242,13 @@
         pickButton.addEventListener('click', (e) => {
             e.preventDefault();
 
+            removeElements();
+
             if (enemyCard.length < 1) {
                 pickEnemyCard();
             }
             pickCardToPlayer();
         });
-
-        setInterval(() => {
-            removeElements();
-            if (cardsDeleted) {
-                cardsDeleted = false;
-            }
-        }, 500);
-
     }
 
     document.addEventListener('DOMContentLoaded', main);

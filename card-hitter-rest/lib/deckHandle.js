@@ -8,22 +8,39 @@ const gameMaps = require('./gameMaps.json');
 const deckAssets = gameMaps.assetsMap;
 const deck = gameMaps.cardMap;
 
-const changeIndexes = (deck) => {
-    // TODO: for loop that suffles cards
+const changeSwapValuesInArray = (deck) => {
+    let returnArray = deck;
+    
+    for (let i = 0; i < returnArray.length - 5; i++) {
+        let randomIndex = Math.round(Math.random(5 - 1) + 1);
+        let temp = returnArray[i];
+        returnArray[i] = returnArray[randomIndex];
+        returnArray[randomIndex] = temp;
+    }
+
+    return returnArray;
 }
 
-const suffleDeck = () => {
-    // TODO: for loop that goes from 0 to random number
+const suffleDeck = (deck) => {
+    let returnDeck = deck;
+    let randomNum = Math.round(Math.random(90 - 50) + 50);
+
+    for (let i = 0; i < randomNum; i++) {
+        returnDeck = changeSwapValuesInArray(returnDeck);
+    }
+
+    return returnDeck;
 }
 
 const provideDeck = () => {
+    let suffeled = suffleDeck(deck);
     const card = [];
-    for(let i = 0; i < deck.length; i++) {
-        card.push(deckAssets[deck[i]]);
+    for (let i = 0; i < suffeled.length; i++) {
+        card.push(deckAssets[suffeled[i]]);
     }
 
     const data = {
-        size: deck.length,
+        size: suffeled.length,
         cards: card
     }
     return data;
@@ -31,5 +48,6 @@ const provideDeck = () => {
 
 
 module.exports = {
-    provideDeck: provideDeck
+    provideDeck: provideDeck,
+    suffleDeck: suffleDeck
 }

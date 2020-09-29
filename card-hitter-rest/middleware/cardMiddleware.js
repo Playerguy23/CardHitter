@@ -16,7 +16,7 @@ const checkCardId = (req, res, next) => {
 }
 
 const checkEnemyAndPlayerCardId = (req, res, next) => {
-    if(!req.query.playerCardId || !req.query.enemyCardId) {
+    if (!req.query.playerCardId || !req.query.enemyCardId) {
         return res.status(400).send({ msg: 'Korttien id:eet puuttuu!' });
     }
 

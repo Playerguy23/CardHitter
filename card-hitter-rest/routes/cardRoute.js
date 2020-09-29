@@ -9,9 +9,11 @@ const router = express.Router();
 const calculationService = require('../services/calculationService');
 const deckHandler = require('../lib/deckHandle');
 const cardService = require('../services/cardService');
+const gameService = require('../services/userGameService');
 
 const userMiddleware = require('../middleware/userMiddleware');
 const cardMiddleware = require('../middleware/cardMiddleware');
+const userGameService = require('../services/userGameService');
 
 router.get('/one', userMiddleware.checkLogin, (req, res, next) => {
     res.status(200).send(cardService.sendOne());
@@ -60,14 +62,24 @@ router.put('/deck/:userGameId', userMiddleware.checkLogin, cardMiddleware.checkU
 router.post('/player/pick/:userGameId', userMiddleware.checkLogin, cardMiddleware.checkUserGameId, (req, res, next) => {
     const userGameId = req.params.userGameId;
 
-    cardService.findForUserByUserGameIdOrderedByNumberInDesc(userGameId, (result) => {
-        if (result.length) {
-            cardService.setAsPlayersCardByUserGameIdAndNumber(result[0].id);
-            return res.status(200).send(result[0]);
+    cardService.findAllPlayerCardsByUserCardOrderedByNumberInDesc(userGameId, (result) => {
+        if (result.length < 5) {
+            cardService.findForUserByUserGameIdOrderedByNumberInDesc(userGameId, (result) => {
+                if (result.length) {
+                    cardService.setAsPlayersCardByUserGameIdAndNumber(result[0].id);
+                    return res.status(200).send(result[0]);
+                } else {
+                    return res.status(400).send({ msg: 'Korttipakka käytetty!' });
+                }
+            });
         } else {
-            return res.status(400).send({ msg: 'Korttipakka käytetty!' });
+            cardService.resetGame(userGameId);
+            userGameService.setGameAsLost(userGameId);
+
+            return res.status(406).send({ msg: 'Käsi on täysi!' });
         }
     });
+
 });
 
 router.post('/enemy/pick/:userGameId', userMiddleware.checkLogin, cardMiddleware.checkUserGameId, (req, res, next) => {
