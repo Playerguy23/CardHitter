@@ -63,13 +63,13 @@ router.post('/player/pick/:userGameId', userMiddleware.checkLogin, cardMiddlewar
     const userGameId = req.params.userGameId;
 
     cardService.findAllPlayerCardsByUserCardOrderedByNumberInDesc(userGameId, (result) => {
-        if (result.length < 5) {
+        if (result.length < 13) {
             cardService.findForUserByUserGameIdOrderedByNumberInDesc(userGameId, (result) => {
                 if (result.length) {
                     cardService.setAsPlayersCardByUserGameIdAndNumber(result[0].id);
                     return res.status(200).send(result[0]);
                 } else {
-                    return res.status(400).send({ msg: 'Korttipakka käytetty!' });
+                    return res.status(204).send({ msg: 'Korttipakka käytetty!' });
                 }
             });
         } else {

@@ -11,8 +11,8 @@ const deck = gameMaps.cardMap;
 const changeSwapValuesInArray = (deck) => {
     let returnArray = deck;
     
-    for (let i = 0; i < returnArray.length - 5; i++) {
-        let randomIndex = Math.round(Math.random(5 - 1) + 1);
+    for (let i = 0; i < returnArray.length - 3; i++) {
+        let randomIndex = i + Math.round(Math.random(3 - 1) + 1);
         let temp = returnArray[i];
         returnArray[i] = returnArray[randomIndex];
         returnArray[randomIndex] = temp;

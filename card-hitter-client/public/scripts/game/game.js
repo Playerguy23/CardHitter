@@ -164,24 +164,26 @@
                 .then(response => {
                     if (response.status === 404) {
                         removablePlayerCards.push(playerElementArray[handIndex]);
-                    }
-                    if (response.ok) {
-                        response.json().then(result => {
-                            playerElementArray[handIndex].style.display = 'none';
-                            for (let enemy of enemyElementArray) {
-                                enemy.style.display = 'none';
-                            }
-
-                            removablePlayerCards.push(playerElementArray[handIndex]);
-                            removableEnemyCards.push(enemysDiv.childNodes[0]);
-                            return;
-                        });
                     } else {
-                        response.json().then(result => {
-                            alert(result.msg);
-                            return;
-                        });
+                        if (response.ok) {
+                            response.json().then(result => {
+                                playerElementArray[handIndex].style.display = 'none';
+                                for (let enemy of enemyElementArray) {
+                                    enemy.style.display = 'none';
+                                }
+
+                                removablePlayerCards.push(playerElementArray[handIndex]);
+                                removableEnemyCards.push(enemysDiv.childNodes[0]);
+                                return;
+                            });
+                        } else {
+                            response.json().then(result => {
+                                alert(result.msg);
+                                return;
+                            });
+                        }
                     }
+
                 });
         });
     }
@@ -208,6 +210,12 @@
 
             if (response.status === 406) {
                 alert('Hävisit pelin!');
+                window.location.href = '/home';
+                return;
+            }
+
+            if (response.status === 204) {
+                alert('Voitit pelin');
                 window.location.href = '/home';
                 return;
             }
