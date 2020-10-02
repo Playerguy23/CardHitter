@@ -60,10 +60,21 @@ const setGameAsLost = (id) => {
     });
 }
 
+const setGameAsWon = (id) => {
+    db.query(userGameQueries.setAsWon, [id], (error, result) => {
+        if (error) {
+            throw error;
+        }
+
+        return true;
+    });
+}
+
 module.exports = {
     findByUserId: findByUserId,
     createGame: createGame,
     findUsedCardsAmountByUserId: findUsedCardsAmountByUserId,
     findAllActiveGamesByUserId: findAllActiveGamesByUserId,
-    setGameAsLost: setGameAsLost
+    setGameAsLost: setGameAsLost,
+    setGameAsWon: setGameAsWon
 }

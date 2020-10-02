@@ -9,7 +9,6 @@ const router = express.Router();
 const calculationService = require('../services/calculationService');
 const deckHandler = require('../lib/deckHandle');
 const cardService = require('../services/cardService');
-const gameService = require('../services/userGameService');
 
 const userMiddleware = require('../middleware/userMiddleware');
 const cardMiddleware = require('../middleware/cardMiddleware');
@@ -63,12 +62,14 @@ router.post('/player/pick/:userGameId', userMiddleware.checkLogin, cardMiddlewar
     const userGameId = req.params.userGameId;
 
     cardService.findAllPlayerCardsByUserCardOrderedByNumberInDesc(userGameId, (result) => {
-        if (result.length < 13) {
+        if (result.length < 8) {
             cardService.findForUserByUserGameIdOrderedByNumberInDesc(userGameId, (result) => {
                 if (result.length) {
                     cardService.setAsPlayersCardByUserGameIdAndNumber(result[0].id);
                     return res.status(200).send(result[0]);
                 } else {
+                    cardService.resetGame(userGameId);
+                    userGameService.setGameAsWon(userGameId);
                     return res.status(204).send({ msg: 'Korttipakka käytetty!' });
                 }
             });

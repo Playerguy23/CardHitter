@@ -163,6 +163,7 @@
             fetch(`${baseUrl}/card/out?playerCardId=${hand[handIndex].id}&enemyCardId=${enemyCard[0].id}`, config)
                 .then(response => {
                     if (response.status === 404) {
+                        alert('Pahoittelut ongelma kortin kanssa.')
                         removablePlayerCards.push(playerElementArray[handIndex]);
                     } else {
                         if (response.ok) {
@@ -203,32 +204,29 @@
         };
 
         fetch(`${baseUrl}/card/player/pick/${gameId}`, config).then(response => {
-            if (response.status === 401) {
-                window.location.href = '/login';
-                return;
-            }
-
-            if (response.status === 406) {
-                alert('Hävisit pelin!');
-                window.location.href = '/home';
-                return;
-            }
-
-            if (response.status === 204) {
-                alert('Voitit pelin');
-                window.location.href = '/home';
-                return;
-            }
-
-            if (response.ok) {
-                response.json().then(result => {
-                    localStorage.setItem('valiaikainen', JSON.stringify(result));
-                    loadPlayerCard(JSON.parse(localStorage.getItem('valiaikainen')));
-                });
-            } else {
-                response.json().then(result => {
-                    alert(result.msg);
-                });
+            switch (response.status) {
+                case 204:
+                    alert('Voitit pelin');
+                    window.location.href = '/home';
+                    break;
+                case 401:
+                    window.location.href = '/login';
+                    break;
+                case 406:
+                    alert('Hävisit pelin!');
+                    window.location.href = '/home';
+                    break;
+                default:
+                    if (response.ok) {
+                        response.json().then(result => {
+                            localStorage.setItem('valiaikainen', JSON.stringify(result));
+                            loadPlayerCard(JSON.parse(localStorage.getItem('valiaikainen')));
+                        });
+                    } else {
+                        response.json().then(result => {
+                            alert(result.msg);
+                        });
+                    }
             }
         });
     }
