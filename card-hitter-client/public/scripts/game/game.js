@@ -9,6 +9,7 @@
     let enemysDiv;
     let pickButton;
     let suffleButton;
+    let maaraTeksti;
 
     let playerElementArray = [];
     let enemyElementArray = [];
@@ -160,7 +161,7 @@
                     'Authorization': `Bearer ${info.token}`
                 }
             }
-            fetch(`${baseUrl}/card/out?playerCardId=${hand[handIndex].id}&enemyCardId=${enemyCard[0].id}`, config)
+            fetch(`${baseUrl}/card/out?userGameId=${gameId}&playerCardId=${hand[handIndex].id}&enemyCardId=${enemyCard[0].id}`, config)
                 .then(response => {
                     if (response.status === 404) {
                         alert('Pahoittelut ongelma kortin kanssa.')
@@ -172,6 +173,8 @@
                                 for (let enemy of enemyElementArray) {
                                     enemy.style.display = 'none';
                                 }
+
+                                maaraTeksti.textContent = result.count;
 
                                 removablePlayerCards.push(playerElementArray[handIndex]);
                                 removableEnemyCards.push(enemysDiv.childNodes[0]);
@@ -219,7 +222,8 @@
                 default:
                     if (response.ok) {
                         response.json().then(result => {
-                            localStorage.setItem('valiaikainen', JSON.stringify(result));
+                            maaraTeksti.textContent = result.count;
+                            localStorage.setItem('valiaikainen', JSON.stringify(result.result));
                             loadPlayerCard(JSON.parse(localStorage.getItem('valiaikainen')));
                         });
                     } else {
@@ -236,6 +240,7 @@
         playersDiv = document.getElementById('player-cards');
         suffleButton = document.getElementById('suffle-button');
         pickButton = document.getElementById('pick-button');
+        maaraTeksti = document.getElementById('maara');
 
         pickButton.style.display = 'none';
 

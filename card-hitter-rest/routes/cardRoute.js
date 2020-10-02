@@ -63,10 +63,18 @@ router.post('/player/pick/:userGameId', userMiddleware.checkLogin, cardMiddlewar
 
     cardService.findAllPlayerCardsByUserCardOrderedByNumberInDesc(userGameId, (result) => {
         if (result.length < 8) {
-            cardService.findForUserByUserGameIdOrderedByNumberInDesc(userGameId, (result) => {
-                if (result.length) {
-                    cardService.setAsPlayersCardByUserGameIdAndNumber(result[0].id);
-                    return res.status(200).send(result[0]);
+            cardService.findForUserByUserGameIdOrderedByNumberInDesc(userGameId, (resultA) => {
+                if (resultA.length) {
+                    cardService.setAsPlayersCardByUserGameIdAndNumber(resultA[0].id);
+                    cardService.countAllUserCards(userGameId, (result) => {
+                        const playerCardCount = result[0][`COUNT(*)`];
+
+                        const response = {
+                            result: resultA[0],
+                            count: playerCardCount
+                        };
+                        return res.status(200).send(response);
+                    });
                 } else {
                     cardService.resetGame(userGameId);
                     userGameService.setGameAsWon(userGameId);
@@ -105,8 +113,9 @@ router.post('/out/:cardId', userMiddleware.checkLogin, cardMiddleware.checkCardI
 });
 
 router.post('/out', userMiddleware.checkLogin, cardMiddleware.checkEnemyAndPlayerCardId, (req, res, next) => {
+    const userGameId = req.query.userGameId;
     const playerCardId = req.query.playerCardId;
-    const enemyCardId = req.query.enemyCardId;
+    const enemyCardId = req.query.enemyCardId
 
     cardService.findActiveById(playerCardId, (resultA) => {
         cardService.findActiveById(enemyCardId, (resultB) => {
@@ -115,7 +124,16 @@ router.post('/out', userMiddleware.checkLogin, cardMiddleware.checkEnemyAndPlaye
                     cardService.setOutOfGameById(playerCardId);
                     cardService.setOutOfGameById(enemyCardId);
 
-                    return res.status(200).send({ msg: 'Kortit poistettu pelistä!' });
+                    cardService.countAllUserCards(userGameId, (result) => {
+                        const playerCardCount = result[0][`COUNT(*)`];
+
+                        const response = {
+                            msg: 'Kortit poistettu pelistä!',
+                            count: playerCardCount
+                        };
+    
+                        return res.status(200).send(response);
+                    });
                 } else {
                     return res.status(400).send({ msg: 'Kortit eivät olleet samat.' });
                 }

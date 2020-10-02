@@ -6,6 +6,7 @@
     "findAllPlayerCardsByUserCardOrderedByNumberInDesc": "SELECT * from user_card WHERE active = 1 AND user_card AND on_game AND user_game_id = ? ORDER BY number DESC;",
     "findAddableCard": "SELECT * FROM user_card WHERE active = 1 AND on_game = 0 AND number = ?;",
     "findByUserGameId": "SELECT * FROM user_card WHERE user_game_id = ?;",
+    "countPlayersCards": "SELECT COUNT(*) FROM user_card WHERE user_game_id = ? AND user_card;",
     "createCard": "INSERT INTO user_card (id, name, path, number, on_game, user_card, active, user_game_id) VALUES (?, ?, ?, ?, 0, 0, 1, ?);",
     "setAsPlayersCardByIdAndNumber": "UPDATE user_card SET on_game = 1, user_card = 1 WHERE id = ? AND active = 1;",
     "setAsEnemysCardByIdAndNumber": "UPDATE user_card SET on_game = 1, active = 1 WHERE id = ?;",

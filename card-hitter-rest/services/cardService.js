@@ -53,6 +53,16 @@ const findAllPlayerCardsByUserCardOrderedByNumberInDesc = (userGameId, callback)
     });
 }
 
+const countAllUserCards = (userGameId, callback) => {
+    db.query(cardQueries.countPlayersCards, [userGameId], (error, result) => {
+        if (error) {
+            throw error;
+        }
+
+        return callback(result);
+    });
+}
+
 const findForUserByUserGameIdOrderedByNumberInDesc = (userGameId, callback) => {
     db.query(cardQueries.findForUserByUserGameIdOrderedByNumberInDesc, [userGameId], (error, result) => {
         if (error) {
@@ -157,6 +167,7 @@ module.exports = {
     findForUserByUserGameIdOrderedByNumberInDesc: findForUserByUserGameIdOrderedByNumberInDesc,
     findForEnemyByUserGameIdOrderedByNumberInDesc: findForEnemyByUserGameIdOrderedByNumberInDesc,
     findById: findById,
+    countAllUserCards: countAllUserCards,
     findActiveById: findActiveById,
     setOutOfGameById: setOutOfGameById,
     setAsEnemysCardByIdAndNumber: setAsEnemysCardByIdAndNumber,
