@@ -5,7 +5,7 @@
 - node.js: https://nodejs.org/
 
 ### Database
-#### Directory database creation queries:
+#### Directory for database creation queries:
 - /database/create_database.sql
 - /database/create_tables.sql
 #### Database options
