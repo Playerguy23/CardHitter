@@ -2,6 +2,13 @@ body {
     background-color: #34339e;
 }
 
+h1 {
+    font-size: 60px;
+    color: #1abd40;
+    text-shadow: 2px 3px 4px black;
+    text-align: center;
+}
+
 #content {
     text-align: center;
     margin-top: 15%;
