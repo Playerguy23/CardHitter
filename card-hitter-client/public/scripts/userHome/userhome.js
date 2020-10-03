@@ -8,12 +8,16 @@
         let logoutButton = document.getElementById('logout-button');
 
         startButton.addEventListener('click', (e) => {
+            if (!info) {
+                window.location.href = '/login';
+            }
+
             socket.emit('startGame', info.token);
 
             let received = false;
             socket.on('startGame', (data) => {
                 if (!received) {
-                    if(!info) {
+                    if (!info || localStorage.length) {
                         window.location.href = '/login';
                     }
 
@@ -34,7 +38,7 @@
 
         logoutButton.addEventListener('click', (event) => {
             event.preventDefault();
-            
+
             localStorage.clear();
             window.location.href = '/login';
         });

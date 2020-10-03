@@ -1,0 +1,27 @@
+body {
+    background-color: #34339e;
+}
+
+#content {
+    text-align: center;
+    margin-top: 15%;
+}
+
+a {
+    text-decoration: none;
+    border: 0px;
+    margin-top: 40px;
+    background-color: #ccc018;
+    border-radius: 20px;
+    font-size: 30px;
+    box-shadow: 2px 2px 4px black;
+    padding: 20px 20px;
+    cursor: pointer;
+    color: black;
+}
+
+a:hover {
+    background-color: black;
+    color: #ebe481;
+    transition: 0.2s ease-out;
+}

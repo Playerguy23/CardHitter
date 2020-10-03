@@ -42,7 +42,7 @@ router.put('/signup', userMiddleware.validateRegisteration, (req, res, next) => 
 });
 
 router.post('/login', (req, res, next) => {
-    const username = req.body.username;
+    const username = req.body.username.toLowerCase();
     const password = req.body.password;
 
     userService.findUserByUsername(username, (result) => {
