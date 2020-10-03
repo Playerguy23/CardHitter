@@ -17,7 +17,7 @@
 - /crad-hitter-client
 - /card-hitter-rest
 
-## Run commands
+## Run commands in both directories
 ```
 npm install
 npm start
