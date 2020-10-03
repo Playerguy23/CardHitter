@@ -32,7 +32,9 @@
             });
         });
 
-        logoutButton.addEventListener('click', () => {
+        logoutButton.addEventListener('click', (event) => {
+            event.preventDefault();
+            
             localStorage.clear();
             window.location.href = '/login';
         });
