@@ -6,13 +6,18 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>User home</title>
 
-        <script src="/socket.io/socket.io.js"></script>
+        <link rel="stylesheet" href="/styles/home.css">
 
+        <script src="/socket.io/socket.io.js"></script>
         <script src="/scripts/userHome/userhome.js"></script>
     </head>
 
     <body>
-        <button id="start-button">Aloita peli</button>
+        <button id="logout-button">Kirjaudu ulos</button>
+        <div id="content">
+            <h1>Kortti peli</h1>
+            <button id="start-button">Aloita peli</button>
+        </div>
     </body>
 
 </html>

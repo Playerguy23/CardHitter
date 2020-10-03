@@ -164,8 +164,7 @@
             fetch(`${baseUrl}/card/out?userGameId=${gameId}&playerCardId=${hand[handIndex].id}&enemyCardId=${enemyCard[0].id}`, config)
                 .then(response => {
                     if (response.status === 404) {
-                        alert('Pahoittelut ongelma kortin kanssa.')
-                        removablePlayerCards.push(playerElementArray[handIndex]);
+                        alert('Pahoittelut ongelma kortin kanssa.');
                     } else {
                         if (response.ok) {
                             response.json().then(result => {

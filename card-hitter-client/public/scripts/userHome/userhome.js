@@ -5,6 +5,7 @@
 
     const main = () => {
         let startButton = document.getElementById('start-button');
+        let logoutButton = document.getElementById('logout-button');
 
         startButton.addEventListener('click', (e) => {
             socket.emit('startGame', info.token);
@@ -29,6 +30,11 @@
                     }
                 }
             });
+        });
+
+        logoutButton.addEventListener('click', () => {
+            localStorage.clear();
+            window.location.href = '/login';
         });
     }
 

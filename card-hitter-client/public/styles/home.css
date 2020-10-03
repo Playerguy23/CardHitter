@@ -1,0 +1,37 @@
+body {
+    background-color: #34339e;
+}
+
+#content {
+    margin-top: 15%;
+    text-align: center;
+}
+
+h1 {
+    font-size: 60px;
+    color: #1abd40;
+    text-shadow: 2px 3px 4px black;
+}
+
+button {
+    cursor: pointer;
+    border: 0px;
+
+    background-color: #47c4d1;
+    padding: 12px 12px;
+    border-radius: 15px;
+    font-size: 40px;
+    margin-top: 50px;
+    box-shadow: 1px 4px 5px black;
+}
+
+#logout-button {
+    margin-top: 0px;
+}
+
+button:hover {
+    background-color: black;
+    color: azure;
+    transition: 0.3s ease-out;
+}
+

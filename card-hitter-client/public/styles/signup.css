@@ -1,5 +1,5 @@
 body {
-    background-color: #b81c8e;
+    background-color: #34339e;
 }
 
 #keskusta {
@@ -19,10 +19,6 @@ p {
     margin-bottom: 60px;
     margin-top: 50px;
 }
-/* 
-pre {
-    background-color: #1abd4000;
-} */
 
 .error {
     padding: 30px 30px;
@@ -36,17 +32,18 @@ pre {
     padding: 30px 30px;
     font-size: 30px;
     color: #1c730a;
-    background-color:#35b591;
+    background-color: #35b591;
     text-shadow: 1px 1px 2px black;
 }
 
 ::placeholder {
     color: #1abd40;
 }
+
 input {
     border: 0px;
     border-bottom: 1px solid black;
-    background-color: #b81c8e;
+    background-color: #34339e;
     font-size: 20px;
     color: #1abd40;
 }
