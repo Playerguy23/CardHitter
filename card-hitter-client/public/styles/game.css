@@ -1,0 +1,27 @@
+body {
+    background-color: #34339e;
+}
+
+h1 {
+    font-size: 50px;
+    color: #1abd40;
+    text-shadow: 2px 3px 4px black;
+}
+
+button {
+    cursor: pointer;
+    border: 0px;
+
+    background-color: #47c4d1;
+    padding: 8px 8px;
+    border-radius: 15px;
+    font-size: 40px;
+    margin-top: 30px;
+    box-shadow: 1px 4px 5px black;
+}
+
+button:hover {
+    background-color: black;
+    color: azure;
+    transition: 0.3s ease-out;
+}
