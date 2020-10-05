@@ -1,6 +1,6 @@
 'use strict';
 
-(function () {
+(function() {
     let socket = io();
     const info = JSON.parse(localStorage.getItem('token'));
     const gameId = localStorage.getItem('game_id');
@@ -27,6 +27,9 @@
         };
 
         fetch(`${baseUrl}/card/deck/${gameId}`, config).then(response => {
+            if (response.status === 401) {
+                window.location.href = '/login';
+            }
             if (response.ok) {
                 response.json().then(result => {
                     pickButton.style.display = 'block';
