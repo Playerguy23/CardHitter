@@ -119,26 +119,30 @@ router.post('/out', userMiddleware.checkLogin, cardMiddleware.checkEnemyAndPlaye
 
     cardService.findActiveById(playerCardId, (resultA) => {
         cardService.findActiveById(enemyCardId, (resultB) => {
-            if (resultA.length && resultB.length) {
-                if (resultA[0].name === resultB[0].name) {
-                    cardService.setOutOfGameById(playerCardId);
-                    cardService.setOutOfGameById(enemyCardId);
-
-                    cardService.countAllUserCards(userGameId, (result) => {
-                        const playerCardCount = result[0][`COUNT(*)`];
-
-                        const response = {
-                            msg: 'Kortit poistettu pelistä!',
-                            count: playerCardCount
-                        };
+            if(resultB.length) {
+                if (resultA.length) {
+                    if (resultA[0].name === resultB[0].name) {
+                        cardService.setOutOfGameById(playerCardId);
+                        cardService.setOutOfGameById(enemyCardId);
     
-                        return res.status(200).send(response);
-                    });
+                        cardService.countAllUserCards(userGameId, (result) => {
+                            const playerCardCount = result[0][`COUNT(*)`];
+    
+                            const response = {
+                                msg: 'Kortit poistettu pelistä!',
+                                count: playerCardCount
+                            };
+        
+                            return res.status(200).send(response);
+                        });
+                    } else {
+                        return res.status(400).send({ msg: 'Kortit eivät olleet samat.' });
+                    }
                 } else {
-                    return res.status(400).send({ msg: 'Kortit eivät olleet samat.' });
+                    return res.status(404).send({ msg: 'Kortteja ei löytynyt!' });
                 }
-            } else {
-                return res.status(404).send({ msg: 'Kortteja ei löytynyt!' });
+            }else {
+                return res.status(406).send({msg: 'Et nostanut uutta korttia!'})
             }
         });
     });
