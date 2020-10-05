@@ -8,7 +8,7 @@ CREATE USER IF NOT EXISTS 'card_hitter_user'@'localhost'
 
 USE card_hitter;
 
---ALTER USER 'card_hitter_user'@'localhost' IDENTIFIED WITH mysql_native_password BY 'card_hitter_user';
+/*ALTER USER 'card_hitter_user'@'localhost' IDENTIFIED WITH mysql_native_password BY 'card_hitter_user';*/
 
 GRANT ALL PRIVILEGES ON card_hitter.* TO 'card_hitter_user'@'localhost' WITH GRANT OPTION;
 
