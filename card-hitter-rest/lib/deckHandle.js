@@ -23,7 +23,7 @@ const changeSwapValuesInArray = (deck) => {
 
 const suffleDeck = (deck) => {
     let returnDeck = deck;
-    let randomNum = Math.round(Math.random(90 - 50) + 50);
+    let randomNum = Math.round(Math.random(90 - 70) + 70);
 
     for (let i = 0; i < randomNum; i++) {
         returnDeck = changeSwapValuesInArray(returnDeck);
