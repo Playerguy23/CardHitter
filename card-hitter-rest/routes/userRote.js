@@ -79,7 +79,9 @@ router.put('/game/new', userMiddleware.checkLogin, (req, res, next) => {
 
     userGameService.findAllActiveGamesByUserId(userId, (result) => {
         if (result.length) {
-            userGameService.setGameAsLost(userId);
+            for (let i = 0; i < result.length; i++) {
+                userGameService.setGameAsLost(result[i].id);
+            }
 
             for (let i = 0; i < result.length; i++) {
                 cardService.resetGame(result[i].id);
