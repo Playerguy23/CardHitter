@@ -64,7 +64,6 @@ router.post('/login', (req, res, next) => {
 router.put('/game/new', userMiddleware.checkLogin, (req, res, next) => {
     const userId = req.userData.userId;
 
-
     userService.createNewGame(userId, (userGameId) => {
         return res.status(200).send({ msg: 'Peli luotu', gameId: userGameId });
     });
