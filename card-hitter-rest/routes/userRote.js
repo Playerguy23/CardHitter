@@ -5,8 +5,6 @@
 
 const express = require('express');
 const router = express.Router();
-const bcrypt = require('bcryptjs');
-const jsonwebtoken = require('jsonwebtoken');
 
 const userMiddleware = require('../middleware/userMiddleware');
 
@@ -42,31 +40,25 @@ router.post('/login', (req, res, next) => {
     const username = req.body.username.toLowerCase();
     const password = req.body.password;
 
-    userService.findUserByUsername(username, (result) => {
-        if (result.length) {
-            const userFromDatabase = result[0];
+    const loginStatus = {
+        loggedIn: 0,
+        wrongPassword: 1,
+        wrongUsernameAndPassword: 2
+    }
 
-            bcrypt.compare(password, userFromDatabase.password, (error, result) => {
-                if (error) {
-                    return error;
-                }
+    const requestUser = {
+        username: username,
+        password: password
+    };
 
-                if (result) {
-                    const token = jsonwebtoken.sign({
-                        userId: userFromDatabase.id
-                    }, 'SECRET', {
-                        expiresIn: '2h'
-                    });
-
-                    userService.updateLoginDate(userFromDatabase.id);
-
-                    return res.status(200).send({ token: token });
-                } else {
-                    return res.status(401).send({ msg: 'Väärä salasana!' });
-                }
-            });
-        } else {
-            return res.status(401).send({ msg: 'Väärä käyttäjätunnus tai salasana!' });
+    userService.logUserIn(requestUser, (status, token) => {
+        switch(status) {
+            case loginStatus.loggedIn:
+                return res.status(200).send({ token: token });
+            case loginStatus.wrongPassword:
+                return res.status(401).send({ msg: 'Väärä salasana!' });
+            case loginStatus.wrongUsernameAndPassword:
+                return res.status(401).send({ msg: 'Väärä käyttäjätunnus tai salasana!' });
         }
     });
 });

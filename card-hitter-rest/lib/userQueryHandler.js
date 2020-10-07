@@ -3,7 +3,7 @@ const uuid = require('uuid');
 const db = require('../lib/db');
 const userQueries = require('../lib/userQueries.json');
 
-const saveNewUser = ({ username, password }) => {
+const saveNewUser = (username, password) => {
     const newId = uuid.v4();
 
     db.query(userQueries.createUser, [newId, username, password], (error, result) => {

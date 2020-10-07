@@ -5,6 +5,7 @@
 
 const uuid = require('uuid');
 const bcrypt = require('bcryptjs');
+const jsonwebtoken = require('jsonwebtoken');
 
 const db = require('../lib/db');
 const userQueries = require('../lib/userQueries.json');
@@ -17,9 +18,8 @@ const createUser = ({ username, password }, callback) => {
     }
 
     userQueryHandler.findUserByUsername(username, (result) => {
-        let status;
         if (result.length) {
-            status = returnStatus.nonRegistered;
+            return callback(returnStatus.nonRegistered);
         } else {
             bcrypt.hash(password, 10, (error, hashedPassword) => {
                 if (error) {
@@ -27,12 +27,45 @@ const createUser = ({ username, password }, callback) => {
                 }
 
                 userQueryHandler.saveNewUser(username, hashedPassword);
+                return callback(returnStatus.registered);
             });
-
-            status = returnStatus.registered;
         }
-        
-        return callback(status);
+    });
+}
+
+const logUserIn = ({ username, password }, callback) => {
+    const returnStatus = {
+        loggedIn: 0,
+        wrongPassword: 1,
+        wrongUsernameAndPassword: 2
+    }
+
+    userQueryHandler.findUserByUsername(username, (result) => {
+        if (result.length) {
+            const userFromDatabase = result[0];
+
+            bcrypt.compare(password, userFromDatabase.password, (error, result) => {
+                if (error) {
+                    return error;
+                }
+
+                if (result) {
+                    const token = jsonwebtoken.sign({
+                        userId: userFromDatabase.id
+                    }, 'SECRET', {
+                        expiresIn: '2h'
+                    });
+
+                    userQueryHandler.updateLoginDate(userFromDatabase.id);
+
+                    return callback(returnStatus.loggedIn, token);
+                } else {
+                    return callback(returnStatus.wrongPassword, 'no token');
+                }
+            });
+        } else {
+            return callback(returnStatus.wrongUsernameAndPassword, 'no token');
+        }
     });
 }
 
@@ -58,6 +91,7 @@ const updateLoginDate = (userId) => {
 
 module.exports = {
     createUser: createUser,
+    logUserIn: logUserIn,
     findUserByUsername: findUserByUsername,
     updateLoginDate: updateLoginDate
 }
