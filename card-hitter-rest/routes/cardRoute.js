@@ -10,7 +10,6 @@ const cardService = require('../services/cardService');
 
 const userMiddleware = require('../middleware/userMiddleware');
 const cardMiddleware = require('../middleware/cardMiddleware');
-const userGameQueryHandler = require('../lib/userGameQueryHandler');
 
 router.put('/deck/:userGameId', userMiddleware.checkLogin, cardMiddleware.checkUserGameId, (req, res, next) => {
     const userGameId = req.params.userGameId;
@@ -21,10 +20,10 @@ router.put('/deck/:userGameId', userMiddleware.checkLogin, cardMiddleware.checkU
     };
 
     cardService.suffleCards(userGameId, (status) => {
-        switch(status) {
+        switch (status) {
             case deckStatus.deckCreated:
                 return res.status(200).send({ msg: 'Deck created' });
-            case  deckStatus.deckAlreadyExists:
+            case deckStatus.deckAlreadyExists:
                 return res.status(400).send({ msg: 'Kortteja on jo pelillä' });
         }
     });
@@ -40,7 +39,7 @@ router.post('/player/pick/:userGameId', userMiddleware.checkLogin, cardMiddlewar
     };
 
     cardService.cardForPlayer(userGameId, (status, cardDetails) => {
-        switch(status) {
+        switch (status) {
             case pickupStatus.successPickup:
                 return res.status(200).send(cardDetails);
             case pickupStatus.deckUsed:
@@ -60,11 +59,11 @@ router.post('/enemy/pick/:userGameId', userMiddleware.checkLogin, cardMiddleware
     }
 
     cardService.cardForEnemy(userGameId, (status, card) => {
-        switch(status) {
+        switch (status) {
             case pickupStatus.successPickup:
                 return res.status(200).send(card);
             case pickupStatus.deckUsed:
-                return res.status(400).send({ msg: 'Korttipakka käytetty!' });  
+                return res.status(400).send({ msg: 'Korttipakka käytetty!' });
         }
     });
 });
@@ -82,34 +81,30 @@ router.post('/out', userMiddleware.checkLogin, cardMiddleware.checkEnemyAndPlaye
     const playerCardId = req.query.playerCardId;
     const enemyCardId = req.query.enemyCardId
 
-    cardService.findActiveById(playerCardId, (resultA) => {
-        cardService.findActiveById(enemyCardId, (resultB) => {
-            if (resultA.length) {
-                if (!resultB.length) {
-                    return res.status(406).send({ msg: 'Et nostanut uutta korttia!' });
-                }
+    const playStatus = {
+        cardPlayedSuccessfully: 0,
+        cardWhereNotPickedup: 1,
+        cardsWhereNotSame: 2,
+        cardsWhereNotFound: 3
+    }
 
-                if (resultA[0].name === resultB[0].name) {
-                    cardService.setCardOutOfGame(playerCardId);
-                    cardService.setCardOutOfGame(enemyCardId);
+    const requestDetails = {
+        playerCardId: playerCardId,
+        enemyCardId: enemyCardId,
+        userGameId: userGameId
+    };
 
-                    cardService.countAllUserCards(userGameId, (result) => {
-                        const playerCardCount = result[0][`COUNT(*)`];
-
-                        const response = {
-                            msg: 'Kortit poistettu pelistä!',
-                            count: playerCardCount
-                        };
-
-                        return res.status(200).send(response);
-                    });
-                } else {
-                    return res.status(400).send({ msg: 'Kortit eivät olleet samat.' });
-                }
-            } else {
+    cardService.playEnemyAndPlayerCard(requestDetails, (status, resDetails) => {
+        switch (status) {
+            case playStatus.cardPlayedSuccessfully:
+                return res.status(200).send(resDetails);
+            case playStatus.cardWhereNotPickedup:
+                return res.status(406).send({ msg: 'Et nostanut uutta korttia!' });
+            case playStatus.cardsWhereNotFound:
                 return res.status(404).send({ msg: 'Kortteja ei löytynyt!' });
-            }
-        });
+            case playStatus.cardsWhereNotSame:
+                return res.status(400).send({ msg: 'Kortit eivät olleet samat.' });
+        }
     });
 });
 

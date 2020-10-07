@@ -2,123 +2,12 @@
  * @file
  * @author Joonatan Taajamaa
  */
-const uuid = require('uuid');
-
-const cardQueries = require('../lib/cardQueries.json');
-
-const db = require('../lib/db');
 const deckHandle = require('../lib/deckHandle');
 const cardQueryHandler = require('../lib/cardQueryHandler');
 const userGameQueryHandler = require('../lib/userGameQueryHandler');
 
-const sendOne = () => {
-    return deckHandle.provideOne();
-}
-
-const findById = (id, callback) => {
-    db.query(cardQueries.findById, [id], (error, result) => {
-        if (error) {
-            throw error;
-        }
-
-        return callback(result);
-    });
-}
-
-const findActiveById = (id, callback) => {
-    db.query(cardQueries.findActiveById, [id], (error, result) => {
-        if (error) {
-            throw error;
-        }
-
-        return callback(result);
-    });
-}
-
-const findByUserGameId = (userGameId, callback) => {
-    db.query(cardQueries.findByUserGameId, [userGameId], (error, result) => {
-        if (error) {
-            throw error;
-        }
-
-        return callback(result);
-    });
-}
-
-const findAllPlayerCardsByUserCardOrderedByNumberInDesc = (userGameId, callback) => {
-    db.query(cardQueries.findAllPlayerCardsByUserCardOrderedByNumberInDesc, [userGameId], (error, result) => {
-        if (error) {
-            throw error;
-        }
-
-        return callback(result);
-    });
-}
-
-const countAllUserCards = (userGameId, callback) => {
-    db.query(cardQueries.countPlayersCards, [userGameId], (error, result) => {
-        if (error) {
-            throw error;
-        }
-
-        return callback(result);
-    });
-}
-
-const findForUserByUserGameIdOrderedByNumberInDesc = (userGameId, callback) => {
-    db.query(cardQueries.findForUserByUserGameIdOrderedByNumberInDesc, [userGameId], (error, result) => {
-        if (error) {
-            throw error;
-        }
-
-        return callback(result);
-    });
-}
-
-const findForEnemyByUserGameIdOrderedByNumberInDesc = (userGameId, callback) => {
-    db.query(cardQueries.findForEnemyByUserGameIdOrderedByNumberInDesc, [userGameId], (error, result) => {
-        if (error) {
-            throw error;
-        }
-
-        return callback(result);
-    });
-}
-
-const createCard = ({ name, path, number, userGameId }, callback) => {
-    const newId = uuid.v4();
-
-    db.query(cardQueries.createCard, [newId, name, path, number, userGameId], (error, result) => {
-        if (error) {
-            throw error;
-        }
-
-        return callback(result);
-    });
-}
-
-const setAsPlayersCardByUserGameIdAndNumber = (id) => {
-    db.query(cardQueries.setAsPlayersCardByIdAndNumber, [id], (error, result) => {
-        if (error) {
-            throw error;
-        }
-
-        return true;
-    });
-}
-
-const setAsEnemysCardByIdAndNumber = (id) => {
-    db.query(cardQueries.setAsEnemysCardByIdAndNumber, [id], (error, result) => {
-        if (error) {
-            throw error;
-        }
-
-        return true;
-    });
-}
-
 const resetGame = (userGameId) => {
-    findByUserGameId(userGameId, (result) => {
+    cardQueryHandler.findByUserGameId(userGameId, (result) => {
         if (result.length) {
             for (let i = 0; i < result.length; i++) {
                 cardQueryHandler.setOutOfGameById(result[i].id);
@@ -211,21 +100,49 @@ const cardForEnemy = (userGameId, callback) => {
     });
 }
 
+const playEnemyAndPlayerCard = ({ playerCardId, enemyCardId, userGameId }, callback) => {
+    const returnStatus = {
+        cardPlayedSuccessfully: 0,
+        cardWhereNotPickedup: 1,
+        cardsWhereNotSame: 2,
+        cardsWhereNotFound: 3
+    }
+
+    cardQueryHandler.findActiveById(playerCardId, (playerCard) => {
+        cardQueryHandler.findActiveById(enemyCardId, (enemyCard) => {
+            if (playerCard) {
+                if (!enemyCard) {
+                    return callback(returnStatus.cardWhereNotPickedup, 'no details');;
+                }
+
+                if (playerCard.name === enemyCard.name) {
+                    setCardOutOfGame(playerCardId);
+                    setCardOutOfGame(enemyCardId);
+
+                    cardQueryHandler.countAllUserCards(userGameId, (count) => {
+                        
+                        const response = {
+                            msg: 'Kortit poistettu pelistä!',
+                            count: count
+                        };
+
+                        return callback(returnStatus.cardPlayedSuccessfully, response);
+                    });
+                } else {
+                    return callback(returnStatus.cardsWhereNotSame, 'no details');
+                }
+            } else {
+                return callback(returnStatus.cardsWhereNotFound, 'no details');
+            }
+        });
+    });
+}
+
 module.exports = {
-    sendOne: sendOne,
-    findByUserGameId: findByUserGameId,
-    createCard: createCard,
     suffleCards: suffleCards,
     cardForPlayer: cardForPlayer,
     cardForEnemy: cardForEnemy,
-    setAsPlayersCardByUserGameIdAndNumber: setAsPlayersCardByUserGameIdAndNumber,
-    findAllPlayerCardsByUserCardOrderedByNumberInDesc: findAllPlayerCardsByUserCardOrderedByNumberInDesc,
-    findForUserByUserGameIdOrderedByNumberInDesc: findForUserByUserGameIdOrderedByNumberInDesc,
-    findForEnemyByUserGameIdOrderedByNumberInDesc: findForEnemyByUserGameIdOrderedByNumberInDesc,
-    findById: findById,
-    countAllUserCards: countAllUserCards,
-    findActiveById: findActiveById,
+    playEnemyAndPlayerCard: playEnemyAndPlayerCard,
     setCardOutOfGame: setCardOutOfGame,
-    setAsEnemysCardByIdAndNumber: setAsEnemysCardByIdAndNumber,
     resetGame: resetGame
 }
