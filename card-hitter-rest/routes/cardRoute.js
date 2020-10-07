@@ -6,8 +6,6 @@
 const express = require('express');
 const router = express.Router();
 
-const calculationService = require('../services/calculationService');
-const deckHandler = require('../lib/deckHandle');
 const cardService = require('../services/cardService');
 
 const userMiddleware = require('../middleware/userMiddleware');
@@ -35,33 +33,49 @@ router.put('/deck/:userGameId', userMiddleware.checkLogin, cardMiddleware.checkU
 router.post('/player/pick/:userGameId', userMiddleware.checkLogin, cardMiddleware.checkUserGameId, (req, res, next) => {
     const userGameId = req.params.userGameId;
 
-    cardService.findAllPlayerCardsByUserCardOrderedByNumberInDesc(userGameId, (result) => {
-        if (result.length < 8) {
-            cardService.findForUserByUserGameIdOrderedByNumberInDesc(userGameId, (resultA) => {
-                if (resultA.length) {
-                    cardService.setAsPlayersCardByUserGameIdAndNumber(resultA[0].id);
-                    cardService.countAllUserCards(userGameId, (result) => {
-                        const playerCardCount = result[0][`COUNT(*)`];
+    const pickupStatus = {
+        successPickup: 0,
+        deckUsed: 1,
+        handIsFull: 3
+    };
 
-                        const response = {
-                            result: resultA[0],
-                            count: playerCardCount
-                        };
-                        return res.status(200).send(response);
-                    });
-                } else {
-                    cardService.resetGame(userGameId);
-                    userGameQueryHandler.setGameAsWon(userGameId);
-                    return res.status(204).send({ msg: 'Korttipakka käytetty!' });
-                }
-            });
-        } else {
-            cardService.resetGame(userGameId);
-            userGameQueryHandler.setGameAsLost(userGameId);
-
-            return res.status(406).send({ msg: 'Käsi on täysi!' });
+    cardService.cardForPlayer(userGameId, (status, cardDetails) => {
+        switch(status) {
+            case pickupStatus.successPickup:
+                return res.status(200).send(cardDetails);
+            case pickupStatus.deckUsed:
+                return res.status(204).send({ msg: 'Korttipakka käytetty!' });
+            case pickupStatus.handIsFull:
+                return res.status(406).send({ msg: 'Käsi on täysi!' });
         }
     });
+    // cardService.findAllPlayerCardsByUserCardOrderedByNumberInDesc(userGameId, (result) => {
+    //     if (result.length < 8) {
+    //         cardService.findForUserByUserGameIdOrderedByNumberInDesc(userGameId, (resultA) => {
+    //             if (resultA.length) {
+    //                 cardService.setAsPlayersCardByUserGameIdAndNumber(resultA[0].id);
+    //                 cardService.countAllUserCards(userGameId, (result) => {
+    //                     const playerCardCount = result[0][`COUNT(*)`];
+
+    //                     const response = {
+    //                         result: resultA[0],
+    //                         count: playerCardCount
+    //                     };
+    //                     return res.status(200).send(response);
+    //                 });
+    //             } else {
+    //                 cardService.resetGame(userGameId);
+    //                 userGameQueryHandler.setGameAsWon(userGameId);
+    //                 return res.status(204).send({ msg: 'Korttipakka käytetty!' });
+    //             }
+    //         });
+    //     } else {
+    //         cardService.resetGame(userGameId);
+    //         userGameQueryHandler.setGameAsLost(userGameId);
+
+    //         return res.status(406).send({ msg: 'Käsi on täysi!' });
+    //     }
+    // });
 
 });
 

@@ -9,6 +9,7 @@ const cardQueries = require('../lib/cardQueries.json');
 const db = require('../lib/db');
 const deckHandle = require('../lib/deckHandle');
 const cardQueryHandler = require('../lib/cardQueryHandler');
+const userGameQueryHandler = require('../lib/userGameQueryHandler');
 
 const sendOne = () => {
     return deckHandle.provideOne();
@@ -126,6 +127,16 @@ const setOutOfGameById = (id) => {
     });
 }
 
+const resetGame = (userGameId) => {
+    findByUserGameId(userGameId, (result) => {
+        if (result.length) {
+            for (let i = 0; i < result.length; i++) {
+                cardQueryHandler.setOutOfGameById(result[i].id);
+            }
+        }
+    });
+}
+
 const suffleCards = (userGameId, callback) => {
     const returnStatus = {
         deckCreated: 0,
@@ -153,12 +164,37 @@ const suffleCards = (userGameId, callback) => {
     });
 }
 
-const resetGame = (userGameId) => {
-    findByUserGameId(userGameId, (result) => {
-        if (result.length) {
-            for (let i = 0; i < result.length; i++) {
-                cardQueryHandler.setOutOfGameById(result[i].id);
-            }
+const cardForPlayer = (userGameId, callback) => {
+    const returnStatus = {
+        successPickup: 0,
+        deckUsed: 1,
+        handIsFull: 3
+    };
+
+    cardQueryHandler.findAllPlayerCardsByUserCardOrderedByNumberInDesc(userGameId, (result) => {
+        if (result.length < 8) {
+            cardQueryHandler.findForUserByUserGameIdOrderedByNumberInDesc(userGameId, (resultA) => {
+                if (resultA.length) {
+                    cardQueryHandler.setAsPlayersCardByUserGameIdAndNumber(resultA[0].id);
+                    cardQueryHandler.countAllUserCards(userGameId, (count) => {
+                        const response = {
+                            result: resultA[0],
+                            count: count
+                        };
+
+                        return callback(returnStatus.successPickup, response);
+                    });
+                } else {
+                    resetGame(userGameId);
+                    userGameQueryHandler.setGameAsWon(userGameId);
+                    return callback(returnStatus.deckUsed, 'no card');
+                }
+            });
+        } else {
+            resetGame(userGameId);
+            userGameQueryHandler.setGameAsLost(userGameId);
+
+            return callback(returnStatus.handIsFull, 'no card');
         }
     });
 }
@@ -168,6 +204,7 @@ module.exports = {
     findByUserGameId: findByUserGameId,
     createCard: createCard,
     suffleCards: suffleCards,
+    cardForPlayer: cardForPlayer,
     setAsPlayersCardByUserGameIdAndNumber: setAsPlayersCardByUserGameIdAndNumber,
     findAllPlayerCardsByUserCardOrderedByNumberInDesc: findAllPlayerCardsByUserCardOrderedByNumberInDesc,
     findForUserByUserGameIdOrderedByNumberInDesc: findForUserByUserGameIdOrderedByNumberInDesc,

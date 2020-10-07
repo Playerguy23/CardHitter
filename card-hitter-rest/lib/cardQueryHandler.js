@@ -59,7 +59,7 @@ const countAllUserCards = (userGameId, callback) => {
             throw error;
         }
 
-        return callback(result);
+        return callback(result[0][`COUNT(*)`]);
     });
 }
 
