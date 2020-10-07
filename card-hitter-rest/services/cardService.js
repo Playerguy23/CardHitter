@@ -126,20 +126,31 @@ const setOutOfGameById = (id) => {
     });
 }
 
-const createDeck = (userGameId) => {
-    const cardData = deckHandle.provideDeck();
-    for (let i = 1; i <= cardData.size; i++) {
-        const details = {
-            name: cardData.cards[i - 1].name,
-            path: cardData.cards[i - 1].path,
-            number: i,
-            userGameId: userGameId
-        };
+const suffleCards = (userGameId, callback) => {
+    const returnStatus = {
+        deckCreated: 0,
+        deckAlreadyExists: 1
+    };
 
-        createCard(details, (result) => {
-            return true;
-        });
-    }
+    cardQueryHandler.findByUserGameId(userGameId, (result) => {
+        if (!result.length) {
+            const cardData = deckHandle.provideDeck();
+            for (let i = 1; i <= cardData.size; i++) {
+                const details = {
+                    name: cardData.cards[i - 1].name,
+                    path: cardData.cards[i - 1].path,
+                    number: i,
+                    userGameId: userGameId
+                };
+
+                cardQueryHandler.createCard(details, (result) => { return true; });
+            }
+
+            return callback(returnStatus.deckCreated);
+        } else {
+            return callback(returnStatus.deckAlreadyExists);
+        }
+    });
 }
 
 const resetGame = (userGameId) => {
@@ -156,7 +167,7 @@ module.exports = {
     sendOne: sendOne,
     findByUserGameId: findByUserGameId,
     createCard: createCard,
-    createDeck: createDeck,
+    suffleCards: suffleCards,
     setAsPlayersCardByUserGameIdAndNumber: setAsPlayersCardByUserGameIdAndNumber,
     findAllPlayerCardsByUserCardOrderedByNumberInDesc: findAllPlayerCardsByUserCardOrderedByNumberInDesc,
     findForUserByUserGameIdOrderedByNumberInDesc: findForUserByUserGameIdOrderedByNumberInDesc,
