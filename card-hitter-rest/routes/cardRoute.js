@@ -36,7 +36,7 @@ router.post('/player/pick/:userGameId', userMiddleware.checkLogin, cardMiddlewar
     const pickupStatus = {
         successPickup: 0,
         deckUsed: 1,
-        handIsFull: 3
+        handIsFull: 2
     };
 
     cardService.cardForPlayer(userGameId, (status, cardDetails) => {
@@ -49,45 +49,22 @@ router.post('/player/pick/:userGameId', userMiddleware.checkLogin, cardMiddlewar
                 return res.status(406).send({ msg: 'Käsi on täysi!' });
         }
     });
-    // cardService.findAllPlayerCardsByUserCardOrderedByNumberInDesc(userGameId, (result) => {
-    //     if (result.length < 8) {
-    //         cardService.findForUserByUserGameIdOrderedByNumberInDesc(userGameId, (resultA) => {
-    //             if (resultA.length) {
-    //                 cardService.setAsPlayersCardByUserGameIdAndNumber(resultA[0].id);
-    //                 cardService.countAllUserCards(userGameId, (result) => {
-    //                     const playerCardCount = result[0][`COUNT(*)`];
-
-    //                     const response = {
-    //                         result: resultA[0],
-    //                         count: playerCardCount
-    //                     };
-    //                     return res.status(200).send(response);
-    //                 });
-    //             } else {
-    //                 cardService.resetGame(userGameId);
-    //                 userGameQueryHandler.setGameAsWon(userGameId);
-    //                 return res.status(204).send({ msg: 'Korttipakka käytetty!' });
-    //             }
-    //         });
-    //     } else {
-    //         cardService.resetGame(userGameId);
-    //         userGameQueryHandler.setGameAsLost(userGameId);
-
-    //         return res.status(406).send({ msg: 'Käsi on täysi!' });
-    //     }
-    // });
-
 });
 
 router.post('/enemy/pick/:userGameId', userMiddleware.checkLogin, cardMiddleware.checkUserGameId, (req, res, next) => {
     const userGameId = req.params.userGameId;
 
-    cardService.findForEnemyByUserGameIdOrderedByNumberInDesc(userGameId, (result) => {
-        if (result.length) {
-            cardService.setAsEnemysCardByIdAndNumber(result[0].id);
-            return res.status(200).send(result[0]);
-        } else {
-            return res.status(400).send({ msg: 'Korttipakka käytetty!' });
+    const pickupStatus = {
+        successPickup: 0,
+        deckUsed: 1,
+    }
+
+    cardService.cardForEnemy(userGameId, (status, card) => {
+        switch(status) {
+            case pickupStatus.successPickup:
+                return res.status(200).send(card);
+            case pickupStatus.deckUsed:
+                return res.status(400).send({ msg: 'Korttipakka käytetty!' });  
         }
     });
 });

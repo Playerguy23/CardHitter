@@ -168,7 +168,7 @@ const cardForPlayer = (userGameId, callback) => {
     const returnStatus = {
         successPickup: 0,
         deckUsed: 1,
-        handIsFull: 3
+        handIsFull: 2
     };
 
     cardQueryHandler.findAllPlayerCardsByUserCardOrderedByNumberInDesc(userGameId, (result) => {
@@ -199,12 +199,30 @@ const cardForPlayer = (userGameId, callback) => {
     });
 }
 
+const cardForEnemy = (userGameId, callback) => {
+    const returnStatus = {
+        successPickup: 0,
+        deckUsed: 1,
+    }
+
+    cardQueryHandler.findForEnemyByUserGameIdOrderedByNumberInDesc(userGameId, (result) => {
+        if (result.length) {
+            cardQueryHandler.setAsEnemysCardByIdAndNumber(result[0].id);
+
+            return callback(returnStatus.successPickup, result[0]);
+        } else {
+            return callback(returnStatus.deckUsed, 'no card');
+        }
+    });
+}
+
 module.exports = {
     sendOne: sendOne,
     findByUserGameId: findByUserGameId,
     createCard: createCard,
     suffleCards: suffleCards,
     cardForPlayer: cardForPlayer,
+    cardForEnemy: cardForEnemy,
     setAsPlayersCardByUserGameIdAndNumber: setAsPlayersCardByUserGameIdAndNumber,
     findAllPlayerCardsByUserCardOrderedByNumberInDesc: findAllPlayerCardsByUserCardOrderedByNumberInDesc,
     findForUserByUserGameIdOrderedByNumberInDesc: findForUserByUserGameIdOrderedByNumberInDesc,
