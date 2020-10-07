@@ -32,7 +32,6 @@ router.put('/signup', userMiddleware.validateRegisteration, (req, res, next) => 
         switch(status) {
             case creationStatus.registered:
                 return res.status(200).send({ msg: 'Käyttäjä on rekisteröitynyt onnistuneesti. Odota hetki!' });
-                break;
             case creationStatus.nonRegistered:
                 return res.status(400).send({ msg: 'Käyttäjänimi on jo käytössä!' });
         }
