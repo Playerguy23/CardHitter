@@ -12,7 +12,7 @@ const cardService = require('../services/cardService');
 
 const userMiddleware = require('../middleware/userMiddleware');
 const cardMiddleware = require('../middleware/cardMiddleware');
-const userGameService = require('../services/userGameService');
+const userGameQueryHandler = require('../lib/userGameQueryHandler');
 
 router.get('/one', userMiddleware.checkLogin, (req, res, next) => {
     res.status(200).send(cardService.sendOne());
@@ -77,13 +77,13 @@ router.post('/player/pick/:userGameId', userMiddleware.checkLogin, cardMiddlewar
                     });
                 } else {
                     cardService.resetGame(userGameId);
-                    userGameService.setGameAsWon(userGameId);
+                    userGameQueryHandler.setGameAsWon(userGameId);
                     return res.status(204).send({ msg: 'Korttipakka käytetty!' });
                 }
             });
         } else {
             cardService.resetGame(userGameId);
-            userGameService.setGameAsLost(userGameId);
+            userGameQueryHandler.setGameAsLost(userGameId);
 
             return res.status(406).send({ msg: 'Käsi on täysi!' });
         }

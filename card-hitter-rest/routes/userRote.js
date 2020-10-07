@@ -9,8 +9,6 @@ const router = express.Router();
 const userMiddleware = require('../middleware/userMiddleware');
 
 const userService = require('../services/userService');
-const cardService = require('../services/cardService');
-const userGameService = require('../services/userGameService');
 
 router.put('/signup', userMiddleware.validateRegisteration, (req, res, next) => {
     const lowerUsername = req.body.username.toLowerCase();
@@ -66,20 +64,9 @@ router.post('/login', (req, res, next) => {
 router.put('/game/new', userMiddleware.checkLogin, (req, res, next) => {
     const userId = req.userData.userId;
 
-    userGameService.findAllActiveGamesByUserId(userId, (result) => {
-        if (result.length) {
-            for (let i = 0; i < result.length; i++) {
-                userGameService.setGameAsLost(result[i].id);
-            }
 
-            for (let i = 0; i < result.length; i++) {
-                cardService.resetGame(result[i].id);
-            }
-        }
-
-        userGameService.createGame(userId, (result, id) => {
-            return res.status(200).send({ msg: 'Peli luotu', gameId: id });
-        });
+    userService.createNewGame(userId, (userGameId) => {
+        return res.status(200).send({ msg: 'Peli luotu', gameId: userGameId });
     });
 });
 

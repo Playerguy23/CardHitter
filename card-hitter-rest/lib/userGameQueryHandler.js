@@ -5,8 +5,8 @@
 
 const uuid = require('uuid');
 
-const db = require('../lib/db');
-const userGameQueries = require('../lib/userGameQueries.json');
+const db = require('./db');
+const userGameQueries = require('./userGameQueries.json');
 
 const findByUserId = (userId, callback) => {
     db.query(userGameQueries.findByUserId, [userId], (error, result) => {

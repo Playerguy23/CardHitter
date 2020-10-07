@@ -3,13 +3,12 @@
  * @author Joonatan Taajamaa
  */
 
-const uuid = require('uuid');
 const bcrypt = require('bcryptjs');
 const jsonwebtoken = require('jsonwebtoken');
 
-const db = require('../lib/db');
-const userQueries = require('../lib/userQueries.json');
 const userQueryHandler = require('../lib/userQueryHandler');
+const userGameQueryHandler = require('../lib/userGameQueryHandler');
+const cardService = require('./cardService');
 
 const createUser = ({ username, password }, callback) => {
     const returnStatus = {
@@ -69,29 +68,26 @@ const logUserIn = ({ username, password }, callback) => {
     });
 }
 
-const findUserByUsername = (username, callback) => {
-    db.query(userQueries.findByUsername, [username], (error, result) => {
-        if (error) {
-            throw error;
+const createNewGame = (userId, callback) => {
+    userGameQueryHandler.findAllActiveGamesByUserId(userId, (result) => {
+        if (result.length) {
+            for (let i = 0; i < result.length; i++) {
+                userGameQueryHandler.setGameAsLost(result[i].id);
+            }
+
+            for (let i = 0; i < result.length; i++) {
+                cardService.resetGame(result[i].id);
+            }
         }
 
-        return callback(result);
-    });
-}
-
-const updateLoginDate = (userId) => {
-    db.query(userQueries.updateLoginDate, [userId], (error, result) => {
-        if (error) {
-            return error;
-        }
-
-        return true;
+        userGameQueryHandler.createGame(userId, (result, id) => {
+            return callback(id);
+        });
     });
 }
 
 module.exports = {
     createUser: createUser,
     logUserIn: logUserIn,
-    findUserByUsername: findUserByUsername,
-    updateLoginDate: updateLoginDate
+    createNewGame: createNewGame
 }

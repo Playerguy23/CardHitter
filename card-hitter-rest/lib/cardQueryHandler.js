@@ -4,11 +4,10 @@
  */
 const uuid = require('uuid');
 
-const cardQueries = require('../lib/cardQueries.json');
+const cardQueries = require('./cardQueries.json');
 
-const db = require('../lib/db');
-const deckHandle = require('../lib/deckHandle');
-const cardQueryHandler = require('../lib/cardQueryHandler');
+const db = require('./db');
+const deckHandle = require('./deckHandle');
 
 const sendOne = () => {
     return deckHandle.provideOne();
@@ -126,45 +125,17 @@ const setOutOfGameById = (id) => {
     });
 }
 
-const createDeck = (userGameId) => {
-    const cardData = deckHandle.provideDeck();
-    for (let i = 1; i <= cardData.size; i++) {
-        const details = {
-            name: cardData.cards[i - 1].name,
-            path: cardData.cards[i - 1].path,
-            number: i,
-            userGameId: userGameId
-        };
-
-        createCard(details, (result) => {
-            return true;
-        });
-    }
-}
-
-const resetGame = (userGameId) => {
-    findByUserGameId(userGameId, (result) => {
-        if (result.length) {
-            for (let i = 0; i < result.length; i++) {
-                cardQueryHandler.setOutOfGameById(result[i].id);
-            }
-        }
-    });
-}
-
 module.exports = {
     sendOne: sendOne,
+    findById: findById,
+    findActiveById: findActiveById,
     findByUserGameId: findByUserGameId,
-    createCard: createCard,
-    createDeck: createDeck,
-    setAsPlayersCardByUserGameIdAndNumber: setAsPlayersCardByUserGameIdAndNumber,
     findAllPlayerCardsByUserCardOrderedByNumberInDesc: findAllPlayerCardsByUserCardOrderedByNumberInDesc,
+    countAllUserCards: countAllUserCards,
     findForUserByUserGameIdOrderedByNumberInDesc: findForUserByUserGameIdOrderedByNumberInDesc,
     findForEnemyByUserGameIdOrderedByNumberInDesc: findForEnemyByUserGameIdOrderedByNumberInDesc,
-    findById: findById,
-    countAllUserCards: countAllUserCards,
-    findActiveById: findActiveById,
-    setOutOfGameById: setOutOfGameById,
+    createCard: createCard,
+    setAsPlayersCardByUserGameIdAndNumber: setAsPlayersCardByUserGameIdAndNumber,
     setAsEnemysCardByIdAndNumber: setAsEnemysCardByIdAndNumber,
-    resetGame: resetGame
+    setOutOfGameById: setOutOfGameById
 }
