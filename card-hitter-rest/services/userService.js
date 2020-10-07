@@ -4,19 +4,35 @@
  */
 
 const uuid = require('uuid');
+const bcrypt = require('bcryptjs');
 
 const db = require('../lib/db');
 const userQueries = require('../lib/userQueries.json');
+const userQueryHandler = require('../lib/userQueryHandler');
 
 const createUser = ({ username, password }, callback) => {
-    const newId = uuid.v4();
+    const returnStatus = {
+        registered: 0,
+        nonRegistered: 1
+    }
 
-    db.query(userQueries.createUser, [newId, username, password], (error, result) => {
-        if (error) {
-            throw error;
+    userQueryHandler.findUserByUsername(username, (result) => {
+        let status;
+        if (result.length) {
+            status = returnStatus.nonRegistered;
+        } else {
+            bcrypt.hash(password, 10, (error, hashedPassword) => {
+                if (error) {
+                    throw error;
+                }
+
+                userQueryHandler.saveNewUser(username, hashedPassword);
+            });
+
+            status = returnStatus.registered;
         }
-
-        return callback(result);
+        
+        return callback(status);
     });
 }
 

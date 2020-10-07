@@ -15,28 +15,26 @@ const cardService = require('../services/cardService');
 const userGameService = require('../services/userGameService');
 
 router.put('/signup', userMiddleware.validateRegisteration, (req, res, next) => {
-
     const lowerUsername = req.body.username.toLowerCase();
     const password = req.body.password;
 
-    userService.findUserByUsername(lowerUsername, (result) => {
-        if (!result.length) {
-            bcrypt.hash(password, 10, (error, hashedPassword) => {
-                if (error) {
-                    throw error;
-                }
+    const creationStatus = {
+        registered: 0,
+        nonRegistered: 1
+    }
 
-                const finalUser = {
-                    username: lowerUsername,
-                    password: hashedPassword
-                }
+    const finalUser = {
+        username: lowerUsername,
+        password: password
+    }
 
-                userService.createUser(finalUser, (result) => {
-                    return res.status(200).send({ msg: 'Käyttäjä on rekisteröitynyt onnistuneesti. Odota hetki!' });
-                });
-            });
-        } else {
-            return res.status(400).send({ msg: 'Käyttäjänimi on jo käytössä!' });
+    userService.createUser(finalUser, (status) => {
+        switch(status) {
+            case creationStatus.registered:
+                return res.status(200).send({ msg: 'Käyttäjä on rekisteröitynyt onnistuneesti. Odota hetki!' });
+                break;
+            case creationStatus.nonRegistered:
+                return res.status(400).send({ msg: 'Käyttäjänimi on jo käytössä!' });
         }
     });
 });
