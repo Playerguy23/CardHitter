@@ -117,16 +117,6 @@ const setAsEnemysCardByIdAndNumber = (id) => {
     });
 }
 
-const setOutOfGameById = (id) => {
-    db.query(cardQueries.setOutOfGameById, [id], (error, result) => {
-        if (error) {
-            throw error;
-        }
-
-        return true;
-    });
-}
-
 const resetGame = (userGameId) => {
     findByUserGameId(userGameId, (result) => {
         if (result.length) {
@@ -162,6 +152,11 @@ const suffleCards = (userGameId, callback) => {
             return callback(returnStatus.deckAlreadyExists);
         }
     });
+}
+
+const setCardOutOfGame = (id) => {
+    cardQueryHandler.setOutOfGameById(id);
+    return;
 }
 
 const cardForPlayer = (userGameId, callback) => {
@@ -230,7 +225,7 @@ module.exports = {
     findById: findById,
     countAllUserCards: countAllUserCards,
     findActiveById: findActiveById,
-    setOutOfGameById: setOutOfGameById,
+    setCardOutOfGame: setCardOutOfGame,
     setAsEnemysCardByIdAndNumber: setAsEnemysCardByIdAndNumber,
     resetGame: resetGame
 }
