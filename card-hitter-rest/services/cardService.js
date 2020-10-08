@@ -57,12 +57,12 @@ const cardForPlayer = (userGameId, callback) => {
 
     cardQueryHandler.findAllPlayerCardsByUserCardOrderedByNumberInDesc(userGameId, (result) => {
         if (result.length < 8) {
-            cardQueryHandler.findForUserByUserGameIdOrderedByNumberInDesc(userGameId, (resultA) => {
-                if (resultA.length) {
-                    cardQueryHandler.setAsPlayersCardByUserGameIdAndNumber(resultA[0].id);
+            cardQueryHandler.findForUserByUserGameIdOrderedByNumberInDesc(userGameId, (cardForPlayer) => {
+                if (cardForPlayer) {
+                    cardQueryHandler.setAsPlayersCardByUserGameIdAndNumber(cardForPlayer.id);
                     cardQueryHandler.countAllUserCards(userGameId, (count) => {
                         const response = {
-                            result: resultA[0],
+                            result: cardForPlayer,
                             count: count
                         };
 
