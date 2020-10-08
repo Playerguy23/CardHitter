@@ -89,11 +89,11 @@ const cardForEnemy = (userGameId, callback) => {
         deckUsed: 1,
     }
 
-    cardQueryHandler.findForEnemyByUserGameIdOrderedByNumberInDesc(userGameId, (result) => {
-        if (result.length) {
-            cardQueryHandler.setAsEnemysCardByIdAndNumber(result[0].id);
+    cardQueryHandler.findForEnemyByUserGameIdOrderedByNumberInDesc(userGameId, (enemyCard) => {
+        if (enemyCard) {
+            cardQueryHandler.setAsEnemysCardByIdAndNumber(enemyCard.id);
 
-            return callback(returnStatus.successPickup, result[0]);
+            return callback(returnStatus.successPickup, enemyCard);
         } else {
             return callback(returnStatus.deckUsed, 'no card');
         }

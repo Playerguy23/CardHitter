@@ -79,7 +79,7 @@ const findForEnemyByUserGameIdOrderedByNumberInDesc = (userGameId, callback) => 
             throw error;
         }
 
-        return callback(result);
+        return callback(result[0]);
     });
 }
 
