@@ -24,6 +24,10 @@ router.get('/home', (req, res) => {
     res.render('userhome');
 });
 
+router.get('/instructions', (req, res) => {
+    res.render('instructions');
+});
+
 router.get('/game', (req, res) => {
     res.render('game');
 });

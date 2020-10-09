@@ -1,0 +1,58 @@
+body {
+    background-color: #642ba6;
+}
+
+a {
+    border: 0px;
+    text-decoration: none;
+    color: black;
+    background-color: #47c4d1;
+    padding: 12px 12px;
+    border-radius: 15px;
+    display: inline-block;
+    font-size: 40px;
+    box-shadow: 1px 4px 5px black;
+}
+
+a:hover {
+    background-color: black;
+    color: azure;
+    transition: 0.3s ease-out;
+}
+
+h1 {
+    font-size: 60px;
+    color: #1abd40;
+    text-shadow: 2px 3px 4px black;
+}
+
+h3 {
+    font-size: 40px;
+    color: #1abd40;
+    text-shadow: 2px 3px 4px black;
+}
+
+h4 {
+    font-size: 20px;
+    color: #1abd40;
+    text-shadow: 2px 3px 4px black;
+}
+
+p {
+    font-size: 20px;
+    color: #1abd40;
+    text-shadow: 2px 3px 4px black;
+}
+
+#maat p {
+    color: #28b0a9;
+}
+
+#maat li {
+    display: inline-block;
+    margin-right: 40px;
+}
+
+#maat li img {
+    margin-left: 30px;
+}
