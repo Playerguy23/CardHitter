@@ -22,8 +22,8 @@ const suffleCards = (userGameId, callback) => {
         deckAlreadyExists: 1
     };
 
-    cardQueryHandler.findByUserGameId(userGameId, (result) => {
-        if (!result.length) {
+    cardQueryHandler.findByUserGameId(userGameId, (cardsInGame) => {
+        if (!cardsInGame.length) {
             const cardData = deckHandle.provideDeck();
             for (let i = 1; i <= cardData.size; i++) {
                 const details = {

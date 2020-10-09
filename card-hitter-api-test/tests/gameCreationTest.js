@@ -1,6 +1,5 @@
 const gameCreationTestService = require('../services/gameCreationTestService');
 const suffleTestService = require('../services/suffleTestService');
-const userCircleTestService = require('../services/userCircleTestService');
 
 const exportFunction = () => {
     gameCreationTestService.createGame((status) => {
