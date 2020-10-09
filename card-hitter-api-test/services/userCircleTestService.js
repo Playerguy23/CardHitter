@@ -19,7 +19,7 @@ const userSignup = (callback) => {
     fetch(`${baseUrl.url}/user/signup`, config).then(response => {
         if (response.ok) {
             response.json().then(result => {
-                return callback(result.msg, 'success');
+                return callback(user, 'success');
             });
         } else {
             response.json().then(result => {
@@ -29,13 +29,13 @@ const userSignup = (callback) => {
     });
 }
 
-const loginUser = (callback) => {
+const loginUser = (user, callback) => {
     const config = {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify(userInfo)
+        body: JSON.stringify(user)
     }
 
     fetch(`${baseUrl.url}/user/login`, config).then(response => {
