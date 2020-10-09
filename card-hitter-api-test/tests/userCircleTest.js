@@ -1,5 +1,4 @@
 const userCircleTestService = require('../services/userCircleTestService');
-const userCircleTestCricle = require('../services/userCircleTestService');
 
 const exportFunction = () => {
     console.log('################');

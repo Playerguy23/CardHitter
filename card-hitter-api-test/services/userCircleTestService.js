@@ -1,9 +1,13 @@
+const uuid = require('uuid');
 const fetch = require('node-fetch');
 
 const userInfo = require('../lib/userInfo.json');
 const baseUrl = require('../lib/baseUrl.json');
 
 const userSignup = (callback) => {
+    const user = userInfo;
+
+    user.username += uuid.v4();
     const config = {
         method: 'PUT',
         headers: {
