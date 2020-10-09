@@ -7,7 +7,7 @@ const exportFunction = () => {
         console.log('Game creation test');
         console.log('################');
         console.log(`Create game: ${status}`);
-    })
+    });
 }
 
 module.exports = exportFunction;
